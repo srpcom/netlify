@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM URL Converter3</title>
+    <title>SRPCOM URL Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -19,10 +19,15 @@
             padding: 2rem;
             max-width: 900px;
             width: 95%; 
-            margin: 2rem auto; 
+            margin: 1rem auto 2rem auto; 
         }
         textarea {
             resize: vertical;
+            transition: background-color 0.3s ease; /* Transisi untuk perubahan warna background */
+        }
+        /* Kelas baru untuk textarea ketika terisi */
+        .textarea-filled {
+            background-color: #dcfce7; /* Hijau muda lembut (Tailwind green-100/200 variant) */
         }
         pre {
             white-space: pre-wrap;
@@ -88,8 +93,9 @@
             .container {
                 padding: 1.5rem; 
             }
-            h1 {
-                font-size: 1.875rem; 
+            h1.main-title { 
+                font-size: 1.5rem; 
+                margin-top: 0.5rem; 
             }
             .action-button {
                 padding: 0.5rem 1rem; 
@@ -97,6 +103,9 @@
             }
             .button-grid {
                  grid-template-columns: 1fr; 
+            }
+            .logo-container img {
+                max-width: 50px; /* Ukuran logo lebih kecil di mobile, 50% dari 100px sebelumnya */
             }
         }
         .footer-link-container {
@@ -113,32 +122,52 @@
             text-decoration: underline;
             color: #dc2626; 
         }
-        /* Custom Tooltip Styles */
         .custom-tooltip {
             position: absolute;
-            background-color: #333;
-            color: white;
+            background-color: rgba(0, 0, 0, 0.65); /* Hitam transparan 65% untuk sedikit lebih gelap */
+            color: #a7f3d0; /* Hijau muda (Tailwind green-200) */
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 0.875rem;
-            z-index: 100; /* Pastikan tooltip di atas elemen lain */
-            display: none; /* Sembunyikan secara default */
-            max-width: 300px; /* Batasi lebar tooltip */
+            z-index: 100; 
+            display: none; 
+            max-width: 300px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            pointer-events: none; /* Agar tooltip tidak mengganggu interaksi dengan elemen di bawahnya, kecuali link */
+        }
+        .custom-tooltip span { /* Untuk teks biasa di tooltip */
+             pointer-events: auto; /* Memungkinkan interaksi dengan teks jika diperlukan */
         }
         .custom-tooltip a {
-            color: #60a5fa; /* Warna biru muda untuk link di tooltip */
+            color: #6ee7b7; /* Hijau muda lebih terang untuk link (Tailwind green-300) */
             text-decoration: underline;
+            pointer-events: auto; /* Pastikan link bisa diklik */
         }
         .custom-tooltip a:hover {
-            color: #3b82f6; /* Warna biru lebih gelap saat hover */
+            color: #34d399; /* Hijau lebih terang saat hover (Tailwind green-400) */
+        }
+        /* Styling untuk Logo */
+        .logo-container {
+            text-align: center;
+            margin-top: 1rem; 
+            margin-bottom: 0.5rem; 
+        }
+        .logo-container img {
+            max-width: 75px; /* Diubah menjadi 50% dari 150px */
+            height: auto; 
+            border-radius: 0.5rem; 
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-rose-100 to-rose-200 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-gradient-to-br from-rose-100 to-rose-200 flex flex-col items-center min-h-screen p-4">
+    
+    <div class="logo-container">
+        <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" 
+             onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
+    </div>
 
     <div class="container">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">SRPCOM URL CONVERTER v.3.0</h1>
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8 main-title">SRPCOM URL CONVERTER</h1>
         <div class="space-y-6">
             <div>
                 <label for="proxyUriInput" class="block text-gray-700 font-medium mb-2">Masukkan URI Proxy, satu atau beberapa Detail Akun:</label>
@@ -162,7 +191,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
                 ></textarea>
             </div>
 
-            <!-- Grid untuk tombol agar lebih rapi -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 button-grid">
                 <button id="btnVidio" class="action-button bg-purple-600 hover:bg-purple-700 text-white">
                     Paket Vidio (quiz.vidio.com)
@@ -192,7 +220,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
                 <pre id="yamlOutput"></pre>
             </div>
 
-            <!-- Grup tombol aksi Salin dan Export -->
             <div class="flex flex-col sm:flex-row justify-center gap-4 button-actions-group">
                 <button id="btnCopy" class="action-button bg-teal-600 hover:bg-teal-700 text-white">
                     Salin YAML
@@ -209,25 +236,21 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         </div>
     </div>
 
-    <!-- Link Join Telegram di luar container utama -->
     <div class="footer-link-container">
         <a href="https://t.me/srpcomgroup" target="_blank" class="footer-link">
             join : t.me/srpcomgroup
         </a>
     </div>
 
-    <!-- Custom Tooltip Element -->
     <div id="customTooltip" class="custom-tooltip"></div>
 
 
     <script>
-        // Ambil elemen dari DOM
         const proxyUriInputElement = document.getElementById('proxyUriInput');
         const yamlOutputElement = document.getElementById('yamlOutput');
         const messageBoxElement = document.getElementById('messageBox');
-        const customTooltipElement = document.getElementById('customTooltip'); // Elemen tooltip
+        const customTooltipElement = document.getElementById('customTooltip'); 
 
-        // Tombol-tombol
         const btnVidio = document.getElementById('btnVidio');
         const btnXcvip = document.getElementById('btnXcvip');
         const btnZoom = document.getElementById('btnZoom');
@@ -238,11 +261,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         const btnExportTxt = document.getElementById('btnExportTxt');
         const btnExportFullConfig = document.getElementById('btnExportFullConfig'); 
 
-        /**
-         * Menampilkan pesan di message box.
-         * @param {string} msg - Pesan yang akan ditampilkan.
-         * @param {string} type - Tipe pesan ('success', 'error', 'info').
-         */
         function showMessage(msg, type) {
             messageBoxElement.textContent = msg;
             messageBoxElement.className = `message-box ${type}`;
@@ -256,11 +274,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }, 3000);
         }
 
-        /**
-         * Mendekode string Base64.
-         * @param {string} str - String Base64 yang dienkode.
-         * @returns {string} String yang telah didekode.
-         */
         function decodeBase64(str) {
             str = str.replace(/-/g, '+').replace(/_/g, '/');
             while (str.length % 4) {
@@ -276,17 +289,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }
         }
 
-        /**
-         * Mengonversi URI VMess ke konfigurasi proxy YAML.
-         * @param {string} vmessUri - String URI VMess.
-         * @param {string} bugHost - Host yang digunakan untuk field 'server'.
-         * @param {boolean} isZoomMode - Flag untuk logika SNI/Host spesifik Zoom.
-         * @param {string} sniOverrideHost - Host spesifik untuk SNI/WS Host.
-         * @param {boolean} useBugAsServerOnly - Flag untuk menggunakan bugHost sebagai server dan host asli untuk header SNI/Host.
-         * @param {boolean} isAvaWcMode - Flag untuk mode avaWC.
-         * @param {string|null} expiryDate - Tanggal kedaluwarsa.
-         * @returns {string} String konfigurasi YAML.
-         */
         function convertVmessToYaml(vmessUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
             const base64EncodedJson = vmessUri.substring(8).trim(); 
             if (!base64EncodedJson) {
@@ -380,17 +382,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             return yamlConfig;
         }
 
-        /**
-         * Mengonversi URI VLESS ke konfigurasi proxy YAML.
-         * @param {string} vlessUri - String URI VLESS.
-         * @param {string} bugHost - Host yang digunakan untuk field 'server'.
-         * @param {boolean} isZoomMode - Flag untuk logika spesifik Zoom.
-         * @param {string} sniOverrideHost - Host spesifik untuk SNI/WS Host.
-         * @param {boolean} useBugAsServerOnly - Flag untuk menggunakan bugHost sebagai server dan host asli untuk header SNI/Host.
-         * @param {boolean} isAvaWcMode - Flag untuk mode avaWC.
-         * @param {string|null} expiryDate - Tanggal kedaluwarsa.
-         * @returns {string} String konfigurasi YAML.
-         */
         function convertVlessToYaml(vlessUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
             const parts = vlessUri.substring(8).split('?');
             const authPart = parts[0];
@@ -494,17 +485,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             return yamlConfig;
         }
 
-        /**
-         * Mengonversi URI Trojan ke konfigurasi proxy YAML.
-         * @param {string} trojanUri - String URI Trojan.
-         * @param {string} bugHost - Host yang digunakan untuk field 'server'.
-         * @param {boolean} isZoomMode - Flag untuk logika spesifik Zoom.
-         * @param {string} sniOverrideHost - Host spesifik untuk SNI/WS Host.
-         * @param {boolean} useBugAsServerOnly - Flag untuk menggunakan bugHost sebagai server dan host asli untuk header SNI/Host.
-         * @param {boolean} isAvaWcMode - Flag untuk mode avaWC.
-         * @param {string|null} expiryDate - Tanggal kedaluwarsa.
-         * @returns {string} String konfigurasi YAML.
-         */
         function convertTrojanToYaml(trojanUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
             const parts = trojanUri.substring(9).split('?');
             const authPart = parts[0];
@@ -605,17 +585,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             return yamlConfig;
         }
         
-        /**
-         * Mengonversi satu URI proxy generik ke cuplikan konfigurasi proxy YAML.
-         * @param {string} proxyUri - String URI proxy.
-         * @param {string} bugHost - Host yang digunakan untuk field 'server'.
-         * @param {boolean} isZoomMode - Flag untuk logika spesifik Zoom.
-         * @param {string} sniOverrideHost - Host spesifik untuk SNI/WS Host.
-         * @param {boolean} useBugAsServerOnly - Flag untuk menggunakan bugHost sebagai server dan host asli untuk header SNI/Host.
-         * @param {boolean} isAvaWcMode - Flag untuk mode avaWC.
-         * @param {string|null} expiryDate - Tanggal kedaluwarsa.
-         * @returns {string} Cuplikan konfigurasi YAML.
-         */
         function convertSingleUriToYamlSnippet(proxyUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
             if (proxyUri.startsWith('vmess://')) {
                 return convertVmessToYaml(proxyUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate);
@@ -628,15 +597,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }
         }
 
-        /**
-         * Melakukan konversi URI input ke YAML.
-         * @param {object} options - Opsi untuk konversi.
-         * @param {string} [options.bugHost=''] - Host yang digunakan untuk field 'server'.
-         * @param {boolean} [options.isZoom=false] - Apakah menerapkan logika SNI/Host spesifik Zoom.
-         * @param {string} [options.sniOverrideHost=''] - Host spesifik untuk SNI/WS Host, server tetap asli.
-         * @param {boolean} [options.useBugAsServerOnly=false] - Gunakan bugHost untuk server, tetapi asli untuk SNI/Host.
-         * @param {boolean} [options.isAvaWcMode=false] - Flag untuk mode avaWC.
-         */
         function performConversion(options = {}) {
             const { bugHost = '', isZoom = false, sniOverrideHost = '', useBugAsServerOnly = false, isAvaWcMode = false } = options;
             const rawInput = proxyUriInputElement.value.trim();
@@ -692,7 +652,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
             if (urisToProcess.length === 0) {
                 showMessage('Tidak ada URI proxy yang valid ditemukan dalam input.', 'error');
-                yamlOutputElement.textContent = 'proxies:\n'; // Set default jika tidak ada URI
+                yamlOutputElement.textContent = 'proxies:\n'; 
                 return;
             }
 
@@ -723,14 +683,11 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             } else if (successCount > 0) {
                 showMessage('Konversi berhasil!', 'success');
             } else {
-                yamlOutputElement.textContent = 'proxies:\n'; // Reset jika tidak ada yang berhasil
+                yamlOutputElement.textContent = 'proxies:\n'; 
                 showMessage('Tidak ada URI valid yang berhasil dikonversi.', 'info');
             }
         }
 
-        /**
-         * Menyalin teks ke clipboard.
-         */
         function copyToClipboard() {
             const textToCopy = yamlOutputElement.textContent;
             if (textToCopy && !textToCopy.startsWith('Error:')) {
@@ -740,10 +697,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }
         }
 
-        /**
-         * Fallback untuk menyalin teks ke clipboard menggunakan document.execCommand.
-         * @param {string} text - Teks yang akan disalin.
-         */
         function fallbackCopyToClipboard(text) {
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -767,11 +720,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }
         }
 
-        /**
-         * Mengekstrak semua nama proxy dari output YAML proxy yang sudah dikonversi.
-         * @param {string} proxiesYamlText - Teks YAML yang berisi daftar proxy (dimulai dengan "proxies:\n").
-         * @returns {string[]} Array nama proxy.
-         */
         function extractAllProxyNamesFromYamlOutput(proxiesYamlText) {
             if (!proxiesYamlText || typeof proxiesYamlText !== 'string') {
                 return [];
@@ -781,7 +729,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             let inProxiesSection = false;
             for (const line of lines) {
                 const trimmedLine = line.trim();
-                if (trimmedLine.toLowerCase() === "proxies:") { // Pastikan case-insensitive
+                if (trimmedLine.toLowerCase() === "proxies:") { 
                     inProxiesSection = true;
                     continue;
                 }
@@ -798,32 +746,17 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             return names;
         }
 
-
-        /**
-         * Mengekstrak nama proxy pertama dari output YAML proxy.
-         * @param {string} proxiesYamlText - Teks YAML yang berisi daftar proxy.
-         * @returns {string} Nama proxy pertama atau string kosong.
-         */
         function extractFirstNameFromYaml(proxiesYamlText) {
              const names = extractAllProxyNamesFromYamlOutput(proxiesYamlText);
              return names.length > 0 ? names[0] : '';
         }
 
-        /**
-         * Membersihkan nama file agar valid.
-         * @param {string} filename - Nama file asli.
-         * @returns {string} Nama file yang sudah dibersihkan.
-         */
         function sanitizeFilename(filename) {
-            if (!filename) return 'config'; // Default jika nama kosong
+            if (!filename) return 'config'; 
             let sanitized = filename.replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
-            return sanitized.substring(0, 50) || 'config'; // Default lagi jika hasil sanitasi kosong
+            return sanitized.substring(0, 50) || 'config'; 
         }
 
-
-        /**
-         * Mengekspor teks ke file .txt.
-         */
         function exportToTxt() {
             const textToExport = yamlOutputElement.textContent;
             if (textToExport && !textToExport.startsWith('Error:') && !textToExport.startsWith('proxies:\n\n') && textToExport.trim().toLowerCase() !== 'proxies:') {
@@ -849,9 +782,6 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }
         }
 
-        /**
-         * Mengekspor konfigurasi Clash lengkap ke file .yaml.
-         */
         function exportFullConfigToYaml() {
             const convertedProxiesYaml = yamlOutputElement.textContent;
 
@@ -861,8 +791,8 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             }
 
             const proxyNames = extractAllProxyNamesFromYamlOutput(convertedProxiesYaml);
-            const firstProxyName = proxyNames.length > 0 ? proxyNames[0] : 'default'; // Default nama jika tidak ada proxy
-            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}.yaml`; // Format nama file baru
+            const firstProxyName = proxyNames.length > 0 ? proxyNames[0] : 'default'; 
+            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}.yaml`; 
 
             let fullConfig = `port: 7890
 socks-port: 7891
@@ -905,7 +835,6 @@ dns:
                 fullConfig += "proxies:\n" + convertedProxiesYaml; 
             }
 
-
             let proxyGroupsYaml = `proxy-groups:\n`;
             proxyGroupsYaml += `- name: SRPCOMVPN\n`;
             proxyGroupsYaml += `  type: select\n`;
@@ -917,7 +846,6 @@ dns:
             } else {
                 proxyGroupsYaml += `  - DIRECT\n`; 
             }
-            // - FALLBACK dan - DIRECT sudah dihapus dari grup SRPCOMVPN
 
             proxyGroupsYaml += `- name: FALLBACK\n`;
             proxyGroupsYaml += `  type: fallback\n`;
@@ -951,30 +879,25 @@ dns:
             }
         }
 
-        // Fungsi untuk tooltip
         function setupTooltip(buttonElement, tooltipElement, tooltipText) {
             buttonElement.addEventListener('mouseenter', (event) => {
-                tooltipElement.innerHTML = tooltipText; // Menggunakan innerHTML untuk merender link
+                tooltipElement.innerHTML = tooltipText; 
                 tooltipElement.style.display = 'block';
                 
-                // Positioning logic
                 const buttonRect = buttonElement.getBoundingClientRect();
                 const tooltipRect = tooltipElement.getBoundingClientRect();
 
-                let top = buttonRect.top - tooltipRect.height - 10; // 10px di atas tombol
+                let top = buttonRect.top - tooltipRect.height - 10; 
                 let left = buttonRect.left + (buttonRect.width / 2) - (tooltipRect.width / 2);
 
-                // Pastikan tooltip tidak keluar layar atas
                 if (top < 0) {
-                    top = buttonRect.bottom + 10; // Jika tidak muat di atas, pindah ke bawah
+                    top = buttonRect.bottom + 10; 
                 }
-                // Pastikan tooltip tidak keluar layar kiri
                 if (left < 0) {
-                    left = 5; // Sedikit padding dari tepi kiri
+                    left = 5; 
                 }
-                // Pastikan tooltip tidak keluar layar kanan
                 if (left + tooltipRect.width > window.innerWidth) {
-                    left = window.innerWidth - tooltipRect.width - 5; // Sedikit padding dari tepi kanan
+                    left = window.innerWidth - tooltipRect.width - 5; 
                 }
                 
                 tooltipElement.style.top = `${top + window.scrollY}px`;
@@ -985,6 +908,15 @@ dns:
                 tooltipElement.style.display = 'none';
             });
         }
+
+        // Event listener untuk perubahan background textarea
+        proxyUriInputElement.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                this.classList.add('textarea-filled');
+            } else {
+                this.classList.remove('textarea-filled');
+            }
+        });
 
 
         // Menambahkan event listener ke tombol-tombol
@@ -998,14 +930,13 @@ dns:
         btnExportTxt.addEventListener('click', exportToTxt);
         btnExportFullConfig.addEventListener('click', exportFullConfigToYaml); 
         
-        // Setup tooltip untuk tombol "Config Siap Pakai"
-        const tooltipTextForFullConfig = `config openclash siap pakai yang didalamnya sudah ada bug sesuai yg anda pilih . utk cara upload diopenclash silakan klik <a href="https://t.me/srpcomchannel/318" target="_blank">https://t.me/srpcomchannel/318</a>`;
+        const tooltipTextForFullConfig = `<span>config openclash siap pakai yang didalamnya sudah ada bug sesuai yg anda pilih . utk cara upload diopenclash silakan klik </span><a href="https://t.me/srpcomchannel/318" target="_blank" rel="noopener noreferrer">https://t.me/srpcomchannel/318</a>`;
         setupTooltip(btnExportFullConfig, customTooltipElement, tooltipTextForFullConfig);
 
 
-        // Pesan awal saat halaman dimuat
         window.onload = () => {
             proxyUriInputElement.value = ''; 
+            proxyUriInputElement.classList.remove('textarea-filled'); // Pastikan background default saat load
             showMessage('Tempel URI Proxy atau Detail Akun, lalu klik Konversi atau pilih opsi Bug.', 'info');
         };
 
