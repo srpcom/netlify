@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM URL Converter</title>
+    <title>SRPCOM URL Converter v.3.0</title>
+    <!-- Favicon ditambahkan di sini -->
+    <link rel="icon" href="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,6 +14,26 @@
             overflow-x: hidden;
             padding-bottom: 4rem; 
         }
+        .header-container {
+            display: flex;
+            align-items: center; /* Menyejajarkan item secara vertikal */
+            justify-content: center; /* Menempatkan item di tengah secara horizontal */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            gap: 0.75rem; /* Jarak antara logo dan judul */
+        }
+        .logo-img { /* Mengganti .logo-container img agar lebih spesifik */
+            max-width: 75px; 
+            height: auto; 
+            border-radius: 0.5rem; 
+        }
+        .main-title-text { /* Kelas baru untuk teks judul */
+            font-size: 1.875rem; /* Tailwind text-3xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: #1f2937; /* Tailwind text-gray-800 */
+            /* Margin bawah pada judul utama dihilangkan karena container .header-container sudah punya margin bawah */
+        }
+
         .container {
             background-color: #ffffff;
             border-radius: 1rem;
@@ -19,15 +41,14 @@
             padding: 2rem;
             max-width: 900px;
             width: 95%; 
-            margin: 1rem auto 2rem auto; 
+            margin: 0 auto 2rem auto; /* Margin atas dikontrol oleh .header-container */
         }
         textarea {
             resize: vertical;
-            transition: background-color 0.3s ease; /* Transisi untuk perubahan warna background */
+            transition: background-color 0.3s ease; 
         }
-        /* Kelas baru untuk textarea ketika terisi */
         .textarea-filled {
-            background-color: #dcfce7; /* Hijau muda lembut (Tailwind green-100/200 variant) */
+            background-color: #dcfce7; 
         }
         pre {
             white-space: pre-wrap;
@@ -88,14 +109,17 @@
             .button-actions-group .action-button {
                 width: 100%; 
             }
+            .header-container {
+                flex-direction: column; /* Logo di atas judul pada layar kecil */
+                gap: 0.25rem;
+            }
+            .main-title-text {
+                font-size: 1.5rem; /* Sedikit lebih kecil di mobile */
+            }
         }
          @media (max-width: 480px) {
             .container {
                 padding: 1.5rem; 
-            }
-            h1.main-title { 
-                font-size: 1.5rem; 
-                margin-top: 0.5rem; 
             }
             .action-button {
                 padding: 0.5rem 1rem; 
@@ -104,8 +128,11 @@
             .button-grid {
                  grid-template-columns: 1fr; 
             }
-            .logo-container img {
-                max-width: 50px; /* Ukuran logo lebih kecil di mobile, 50% dari 100px sebelumnya */
+            .logo-img { /* Mengganti .logo-container img agar lebih spesifik */
+                max-width: 60px; /* Ukuran logo lebih kecil lagi di mobile */
+            }
+             .main-title-text {
+                font-size: 1.25rem; /* Lebih kecil lagi di mobile */
             }
         }
         .footer-link-container {
@@ -124,8 +151,8 @@
         }
         .custom-tooltip {
             position: absolute;
-            background-color: rgba(0, 0, 0, 0.65); /* Hitam transparan 65% untuk sedikit lebih gelap */
-            color: #a7f3d0; /* Hijau muda (Tailwind green-200) */
+            background-color: rgba(0, 0, 0, 0.65); 
+            color: #a7f3d0; 
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 0.875rem;
@@ -133,41 +160,32 @@
             display: none; 
             max-width: 300px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            pointer-events: none; /* Agar tooltip tidak mengganggu interaksi dengan elemen di bawahnya, kecuali link */
+            pointer-events: none; 
         }
-        .custom-tooltip span { /* Untuk teks biasa di tooltip */
-             pointer-events: auto; /* Memungkinkan interaksi dengan teks jika diperlukan */
+        .custom-tooltip span { 
+             pointer-events: auto; 
         }
         .custom-tooltip a {
-            color: #6ee7b7; /* Hijau muda lebih terang untuk link (Tailwind green-300) */
+            color: #6ee7b7; 
             text-decoration: underline;
-            pointer-events: auto; /* Pastikan link bisa diklik */
+            pointer-events: auto; 
         }
         .custom-tooltip a:hover {
-            color: #34d399; /* Hijau lebih terang saat hover (Tailwind green-400) */
-        }
-        /* Styling untuk Logo */
-        .logo-container {
-            text-align: center;
-            margin-top: 1rem; 
-            margin-bottom: 0.5rem; 
-        }
-        .logo-container img {
-            max-width: 75px; /* Diubah menjadi 50% dari 150px */
-            height: auto; 
-            border-radius: 0.5rem; 
+            color: #34d399; 
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-rose-100 to-rose-200 flex flex-col items-center min-h-screen p-4">
     
-    <div class="logo-container">
-        <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" 
+    <!-- Header Container untuk Logo dan Judul -->
+    <div class="header-container">
+        <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img"
              onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
+        <h1 class="main-title-text">SRPCOM URL CONVERTER v.3.0</h1>
     </div>
 
     <div class="container">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8 main-title">SRPCOM URL CONVERTER</h1>
+        <!-- Judul asli di dalam container ini dihapus -->
         <div class="space-y-6">
             <div>
                 <label for="proxyUriInput" class="block text-gray-700 font-medium mb-2">Masukkan URI Proxy, satu atau beberapa Detail Akun:</label>
@@ -909,7 +927,6 @@ dns:
             });
         }
 
-        // Event listener untuk perubahan background textarea
         proxyUriInputElement.addEventListener('input', function() {
             if (this.value.trim() !== '') {
                 this.classList.add('textarea-filled');
@@ -918,8 +935,6 @@ dns:
             }
         });
 
-
-        // Menambahkan event listener ke tombol-tombol
         btnVidio.addEventListener('click', () => performConversion({ bugHost: 'quiz.vidio.com', useBugAsServerOnly: true }));
         btnXcvip.addEventListener('click', () => performConversion({ bugHost: 'xcvip.srpcom.online', useBugAsServerOnly: true }));
         btnZoom.addEventListener('click', () => performConversion({ bugHost: 'support.zoom.us', isZoom: true }));
@@ -933,10 +948,9 @@ dns:
         const tooltipTextForFullConfig = `<span>config openclash siap pakai yang didalamnya sudah ada bug sesuai yg anda pilih . utk cara upload diopenclash silakan klik </span><a href="https://t.me/srpcomchannel/318" target="_blank" rel="noopener noreferrer">https://t.me/srpcomchannel/318</a>`;
         setupTooltip(btnExportFullConfig, customTooltipElement, tooltipTextForFullConfig);
 
-
         window.onload = () => {
             proxyUriInputElement.value = ''; 
-            proxyUriInputElement.classList.remove('textarea-filled'); // Pastikan background default saat load
+            proxyUriInputElement.classList.remove('textarea-filled'); 
             showMessage('Tempel URI Proxy atau Detail Akun, lalu klik Konversi atau pilih opsi Bug.', 'info');
         };
 
