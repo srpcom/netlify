@@ -20,6 +20,11 @@
             50% { box-shadow: 0 0 16px 4px rgba(34, 197, 94, 0.5); }
             100% { box-shadow: 0 0 8px 0 rgba(34, 197, 94, 0.3); }
         }
+        @keyframes animateRunningText {
+            to {
+                background-position: -200% center;
+            }
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -46,23 +51,14 @@
         .main-title-text { 
             font-size: 1.875rem; 
             font-weight: 700; 
-            /* Efek warna berjalan pada judul */
             background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             animation: animateRunningText 4s linear infinite;
-            /* Shadow pada judul untuk efek 3D */
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
-        /* Keyframes baru untuk warna berjalan */
-        @keyframes animateRunningText {
-            to {
-                background-position: -200% center;
-            }
-        }
-
 
         .container {
             background-color: rgba(220, 252, 231, 0.85);
@@ -180,10 +176,10 @@
             padding-bottom: 1rem; 
         }
         .footer-link {
-            color: #000000; /* Warna diubah menjadi hitam */
+            color: #000000; 
             text-decoration: none;
-            font-weight: 600; /* Sedikit lebih tebal agar lebih terlihat */
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); /* Shadow putih agar kontras */
+            font-weight: 600; 
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); 
         }
         .footer-link:hover {
             text-decoration: underline;
@@ -335,13 +331,41 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
         let selectedPaketSuffix = ''; 
 
+        // Database kutipan hadis yang diperluas
         const hadithQuotes = [
             "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lain.\" (HR. Ahmad)",
             "\"Amal yang paling dicintai oleh Allah adalah yang paling terus-menerus meskipun sedikit.\" (HR. Bukhari & Muslim)",
             "\"Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.\" (HR. Muslim)",
             "\"Senyummu di hadapan saudaramu adalah sedekah bagimu.\" (HR. Tirmidzi)",
             "\"Orang yang kuat bukanlah dia yang pandai bergulat, tetapi orang yang kuat adalah dia yang mampu mengendalikan dirinya ketika marah.\" (HR. Bukhari & Muslim)",
-            "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\" (HR. Muslim)"
+            "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\" (HR. Muslim)",
+            "\"Setiap kebaikan adalah sedekah.\" (HR. Bukhari & Muslim)",
+            "\"Jauhilah olehmu sifat hasad (dengki), karena sesungguhnya hasad itu memakan kebaikan-kebaikan sebagaimana api memakan kayu bakar.\" (HR. Abu Dawud)",
+            "\"Barangsiapa yang tidak menyayangi, maka ia tidak akan disayangi.\" (HR. Bukhari)",
+            "\"Tinggalkanlah apa yang meragukanmu kepada apa yang tidak meragukanmu.\" (HR. Tirmidzi & An-Nasa'i)",
+            "\"Sebagian dari kebaikan Islam seseorang adalah meninggalkan apa yang tidak bermanfaat baginya.\" (HR. Tirmidzi)",
+            "\"Bertakwalah kepada Allah di mana pun kamu berada, iringilah perbuatan buruk dengan perbuatan baik yang akan menghapusnya, dan bergaullah dengan manusia dengan akhlak yang baik.\" (HR. Tirmidzi)",
+            "\"Dua nikmat yang banyak manusia tertipu di dalamnya, yaitu kesehatan dan waktu luang.\" (HR. Bukhari)",
+            "\"Barangsiapa yang beriman kepada Allah dan hari akhir, maka hendaklah ia berkata baik atau diam.\" (HR. Bukhari & Muslim)",
+            "\"Setiap anak Adam sering berbuat salah, dan sebaik-baik orang yang berbuat salah adalah yang mau bertaubat.\" (HR. Tirmidzi)",
+            "\"Sesungguhnya kejujuran akan membimbing pada kebaikan, dan kebaikan itu akan membimbing ke surga.\" (HR. Bukhari & Muslim)",
+            "\"Permudahlah dan jangan mempersulit, berilah kabar gembira dan jangan membuat orang lari.\" (HR. Bukhari & Muslim)",
+            "\"Takutlah kepada neraka meskipun hanya dengan (sedekah) sebiji kurma.\" (HR. Bukhari)",
+            "\"Ikhlaslah dalam beramal, niscaya cukup bagimu amalan yang sedikit.\" (HR. Al-Hakim)",
+            "\"Barangsiapa yang ingin dilapangkan rezekinya dan dipanjangkan umurnya, maka hendaklah ia menyambung tali silaturahmi.\" (HR. Bukhari)",
+            "\"Sesungguhnya amalan itu tergantung pada niatnya, dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan.\" (HR. Bukhari & Muslim)",
+            "\"Bukanlah kekayaan itu karena banyaknya harta, tetapi kekayaan yang hakiki adalah kekayaan jiwa (hati).\" (HR. Bukhari & Muslim)",
+            "\"Doa adalah senjata orang mukmin.\" (HR. Al-Hakim)",
+            "\"Kebersihan adalah sebagian dari iman.\" (HR. Muslim)",
+            "\"Malu adalah bagian dari iman.\" (HR. Bukhari)",
+            "\"Berilah makan orang yang lapar, jenguklah orang yang sakit, dan bebaskanlah tawanan.\" (HR. Bukhari)",
+            "\"Tidak ada suatu pemberian yang lebih baik dari seorang ayah kepada anaknya selain dari pendidikan yang baik.\" (HR. Tirmidzi)",
+            "\"Jagalah Allah, niscaya Allah akan menjagamu.\" (HR. Tirmidzi)",
+            "\"Saling memberi hadiahlah kalian, niscaya kalian akan saling mencintai.\" (HR. Bukhari dalam Al-Adab Al-Mufrad)",
+            "\"Barangsiapa yang memudahkan urusan orang lain, pasti Allah akan memudahkannya di dunia dan di akhirat.\" (HR. Muslim)",
+            "\"Sesungguhnya Allah menyukai jika salah seorang dari kalian melakukan suatu pekerjaan, ia melakukannya dengan baik (itqan).\" (HR. Al-Baihaqi)",
+            "\"Tangan di atas lebih baik daripada tangan di bawah.\" (HR. Bukhari & Muslim)",
+            "\"Dunia ini adalah perhiasan, dan sebaik-baik perhiasan dunia adalah wanita shalihah.\" (HR. Muslim)"
         ];
 
         function displayRandomHadith() {
