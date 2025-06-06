@@ -3,52 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM URL Converter v.3.0</title>
-    <!-- Favicon ditambahkan di sini -->
+    <title>SRPCOM URL Converter v.3.1</title>
+    <!-- Favicon -->
     <link rel="icon" href="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Keyframes untuk animasi */
+        @keyframes animateRainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes animatePulsatingBorder {
+            0% { box-shadow: 0 0 8px 0 rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 16px 4px rgba(34, 197, 94, 0.5); }
+            100% { box-shadow: 0 0 8px 0 rgba(34, 197, 94, 0.3); }
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             padding-bottom: 4rem; 
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: animateRainbow 15s ease infinite;
         }
         .header-container {
             display: flex;
-            align-items: center; /* Menyejajarkan item secara vertikal */
-            justify-content: center; /* Menempatkan item di tengah secara horizontal */
+            align-items: center; 
+            justify-content: center; 
             margin-top: 1rem;
             margin-bottom: 0.5rem;
-            gap: 0.75rem; /* Jarak antara logo dan judul */
+            gap: 0.75rem; 
         }
-        .logo-img { /* Mengganti .logo-container img agar lebih spesifik */
+        .logo-img { 
             max-width: 75px; 
             height: auto; 
             border-radius: 0.5rem; 
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
         }
-        .main-title-text { /* Kelas baru untuk teks judul */
-            font-size: 1.875rem; /* Tailwind text-3xl */
-            font-weight: 700; /* Tailwind font-bold */
-            color: #1f2937; /* Tailwind text-gray-800 */
-            /* Margin bawah pada judul utama dihilangkan karena container .header-container sudah punya margin bawah */
+        .main-title-text { 
+            font-size: 1.875rem; 
+            font-weight: 700; 
+            background: linear-gradient(-45deg, #fde047, #f97316, #d946ef, #4f46e5);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: animateRainbow 10s ease infinite;
+            /* Shadow pada judul untuk efek 3D */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .container {
-            background-color: #ffffff;
+            /* Background hijau transparan */
+            background-color: rgba(220, 252, 231, 0.85);
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             padding: 2rem;
             max-width: 900px;
             width: 95%; 
-            margin: 0 auto 2rem auto; /* Margin atas dikontrol oleh .header-container */
+            margin: 0 auto 2rem auto; 
         }
         textarea {
             resize: vertical;
-            transition: background-color 0.3s ease; 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+            border: 2px solid transparent; /* Border awal transparan */
+        }
+        /* Kelas untuk border berdenyut */
+        .textarea-pulsating-border {
+             border-color: #22c55e; /* Warna border hijau solid */
+             animation: animatePulsatingBorder 2.5s infinite ease-in-out;
         }
         .textarea-filled {
-            background-color: #dcfce7; 
+            background-color: #f0fdf4; /* Warna hijau sangat lembut saat terisi */
         }
         pre {
             white-space: pre-wrap;
@@ -82,20 +114,22 @@
             background-color: #dbeafe; 
             color: #1e40af; 
         }
+        /* Efek 3D pada semua tombol */
         .action-button {
+            position: relative;
             font-weight: 600; 
-            padding: 0.625rem 1.5rem; 
+            padding: 0.75rem 1.5rem; 
             border-radius: 0.5rem; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
-            transition: all 0.3s ease-in-out;
-            transform-origin: center;
+            border: none;
+            border-bottom: 4px solid rgba(0,0,0,0.3); /* Shadow bawah untuk efek 3D */
+            transition: all 0.1s ease-in-out;
         }
         .action-button:hover {
-            transform: scale(1.05); 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+            transform: translateY(-2px); /* Sedikit naik saat hover */
         }
         .action-button:active {
-            transform: scale(0.98); 
+            transform: translateY(2px); /* Tombol ditekan ke bawah */
+            border-bottom-width: 2px; /* Shadow bawah berkurang saat ditekan */
         }
 
         @media (max-width: 768px) {
@@ -110,11 +144,11 @@
                 width: 100%; 
             }
             .header-container {
-                flex-direction: column; /* Logo di atas judul pada layar kecil */
+                flex-direction: column; 
                 gap: 0.25rem;
             }
             .main-title-text {
-                font-size: 1.5rem; /* Sedikit lebih kecil di mobile */
+                font-size: 1.5rem; 
             }
         }
          @media (max-width: 480px) {
@@ -122,17 +156,17 @@
                 padding: 1.5rem; 
             }
             .action-button {
-                padding: 0.5rem 1rem; 
+                padding: 0.625rem 1rem; 
                 font-size: 0.875rem; 
             }
             .button-grid {
                  grid-template-columns: 1fr; 
             }
-            .logo-img { /* Mengganti .logo-container img agar lebih spesifik */
-                max-width: 60px; /* Ukuran logo lebih kecil lagi di mobile */
+            .logo-img { 
+                max-width: 60px; 
             }
              .main-title-text {
-                font-size: 1.25rem; /* Lebih kecil lagi di mobile */
+                font-size: 1.25rem; 
             }
         }
         .footer-link-container {
@@ -141,13 +175,14 @@
             padding-bottom: 1rem; 
         }
         .footer-link {
-            color: #ef4444; 
+            color: #f8fafc; 
             text-decoration: none;
             font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
         }
         .footer-link:hover {
             text-decoration: underline;
-            color: #dc2626; 
+            color: #e2e8f0; 
         }
         .custom-tooltip {
             position: absolute;
@@ -175,13 +210,13 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-rose-100 to-rose-200 flex flex-col items-center min-h-screen p-4">
+<body class="flex flex-col items-center min-h-screen p-4">
     
     <!-- Header Container untuk Logo dan Judul -->
     <div class="header-container">
         <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img"
              onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
-        <h1 class="main-title-text">SRPCOM URL CONVERTER v.3.0</h1>
+        <h1 class="main-title-text">SRPCOM URL CONVERTER v.3.1</h1>
     </div>
 
     <div class="container">
@@ -192,7 +227,7 @@
                 <textarea
                     id="proxyUriInput"
                     rows="8"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg bg-white"
+                    class="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg bg-white textarea-pulsating-border"
                     placeholder="Contoh URI Mentah (pisahkan dengan | atau ENTER):
 vmess://...
 vless://... | trojan://...
@@ -211,10 +246,10 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 button-grid">
                 <button id="btnVidio" class="action-button bg-purple-600 hover:bg-purple-700 text-white">
-                    Paket Vidio (quiz.vidio.com)
+                    Vidio (quiz.vidio.com)
                 </button>
                 <button id="btnXcvip" class="action-button bg-indigo-600 hover:bg-indigo-700 text-white">
-                    Paket XCVIP (xcvip.srpcom.online)
+                    XCVIP (xcvip.srpcom.online)
                 </button>
                 <button id="btnZoom" class="action-button bg-red-600 hover:bg-red-700 text-white">
                     XCVIP WC (support.zoom.us)
@@ -278,6 +313,8 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         const btnCopy = document.getElementById('btnCopy');
         const btnExportTxt = document.getElementById('btnExportTxt');
         const btnExportFullConfig = document.getElementById('btnExportFullConfig'); 
+
+        let selectedPaketSuffix = ''; // Variabel global untuk menyimpan akhiran nama file
 
         function showMessage(msg, type) {
             messageBoxElement.textContent = msg;
@@ -810,7 +847,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
             const proxyNames = extractAllProxyNamesFromYamlOutput(convertedProxiesYaml);
             const firstProxyName = proxyNames.length > 0 ? proxyNames[0] : 'default'; 
-            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}.yaml`; 
+            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}${selectedPaketSuffix}.yaml`; 
 
             let fullConfig = `port: 7890
 socks-port: 7891
@@ -935,12 +972,14 @@ dns:
             }
         });
 
-        btnVidio.addEventListener('click', () => performConversion({ bugHost: 'quiz.vidio.com', useBugAsServerOnly: true }));
-        btnXcvip.addEventListener('click', () => performConversion({ bugHost: 'xcvip.srpcom.online', useBugAsServerOnly: true }));
-        btnZoom.addEventListener('click', () => performConversion({ bugHost: 'support.zoom.us', isZoom: true }));
-        btnVidioSni.addEventListener('click', () => performConversion({ sniOverrideHost: 'quiz.vidio.com' }));
-        btnAvaWc.addEventListener('click', () => performConversion({ isAvaWcMode: true }));
-        btnConvert.addEventListener('click', () => performConversion());
+        // Menambahkan event listener ke tombol-tombol dengan pengaturan suffix
+        btnVidio.addEventListener('click', () => { selectedPaketSuffix = '_vidio'; performConversion({ bugHost: 'quiz.vidio.com', useBugAsServerOnly: true }); });
+        btnXcvip.addEventListener('click', () => { selectedPaketSuffix = '_xcvip'; performConversion({ bugHost: 'xcvip.srpcom.online', useBugAsServerOnly: true }); });
+        btnZoom.addEventListener('click', () => { selectedPaketSuffix = '_xcvipwc'; performConversion({ bugHost: 'support.zoom.us', isZoom: true }); });
+        btnVidioSni.addEventListener('click', () => { selectedPaketSuffix = '_vidiosni'; performConversion({ sniOverrideHost: 'quiz.vidio.com' }); });
+        btnAvaWc.addEventListener('click', () => { selectedPaketSuffix = '_avawc'; performConversion({ isAvaWcMode: true }); });
+        btnConvert.addEventListener('click', () => { selectedPaketSuffix = ''; performConversion(); });
+
         btnCopy.addEventListener('click', copyToClipboard);
         btnExportTxt.addEventListener('click', exportToTxt);
         btnExportFullConfig.addEventListener('click', exportFullConfigToYaml); 
