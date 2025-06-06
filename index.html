@@ -46,18 +46,25 @@
         .main-title-text { 
             font-size: 1.875rem; 
             font-weight: 700; 
-            background: linear-gradient(-45deg, #fde047, #f97316, #d946ef, #4f46e5);
-            background-size: 400% 400%;
+            /* Efek warna berjalan pada judul */
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: animateRainbow 10s ease infinite;
+            animation: animateRunningText 4s linear infinite;
             /* Shadow pada judul untuk efek 3D */
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
+        /* Keyframes baru untuk warna berjalan */
+        @keyframes animateRunningText {
+            to {
+                background-position: -200% center;
+            }
+        }
+
 
         .container {
-            /* Background hijau transparan */
             background-color: rgba(220, 252, 231, 0.85);
             backdrop-filter: blur(8px); 
             -webkit-backdrop-filter: blur(8px);
@@ -72,15 +79,14 @@
         textarea {
             resize: vertical;
             transition: background-color 0.3s ease, box-shadow 0.3s ease; 
-            border: 2px solid transparent; /* Border awal transparan */
+            border: 2px solid transparent; 
         }
-        /* Kelas untuk border berdenyut */
         .textarea-pulsating-border {
-             border-color: #22c55e; /* Warna border hijau solid */
+             border-color: #22c55e; 
              animation: animatePulsatingBorder 2.5s infinite ease-in-out;
         }
         .textarea-filled {
-            background-color: #f0fdf4; /* Warna hijau sangat lembut saat terisi */
+            background-color: #f0fdf4; 
         }
         pre {
             white-space: pre-wrap;
@@ -114,22 +120,21 @@
             background-color: #dbeafe; 
             color: #1e40af; 
         }
-        /* Efek 3D pada semua tombol */
         .action-button {
             position: relative;
             font-weight: 600; 
             padding: 0.75rem 1.5rem; 
             border-radius: 0.5rem; 
             border: none;
-            border-bottom: 4px solid rgba(0,0,0,0.3); /* Shadow bawah untuk efek 3D */
+            border-bottom: 4px solid rgba(0,0,0,0.3); 
             transition: all 0.1s ease-in-out;
         }
         .action-button:hover {
-            transform: translateY(-2px); /* Sedikit naik saat hover */
+            transform: translateY(-2px); 
         }
         .action-button:active {
-            transform: translateY(2px); /* Tombol ditekan ke bawah */
-            border-bottom-width: 2px; /* Shadow bawah berkurang saat ditekan */
+            transform: translateY(2px); 
+            border-bottom-width: 2px; 
         }
 
         @media (max-width: 768px) {
@@ -171,18 +176,27 @@
         }
         .footer-link-container {
             text-align: center;
-            margin-top: 2rem; 
+            margin-top: 1rem; 
             padding-bottom: 1rem; 
         }
         .footer-link {
-            color: #f8fafc; 
+            color: #000000; /* Warna diubah menjadi hitam */
             text-decoration: none;
-            font-weight: 500;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+            font-weight: 600; /* Sedikit lebih tebal agar lebih terlihat */
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); /* Shadow putih agar kontras */
         }
         .footer-link:hover {
             text-decoration: underline;
-            color: #e2e8f0; 
+            color: #1f2937; 
+        }
+        .hadith-quote-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 0 1rem;
+            font-style: italic;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+            min-height: 40px; 
         }
         .custom-tooltip {
             position: absolute;
@@ -220,7 +234,7 @@
     </div>
 
     <div class="container">
-        <!-- Judul asli di dalam container ini dihapus -->
+        <!-- Konten utama di sini -->
         <div class="space-y-6">
             <div>
                 <label for="proxyUriInput" class="block text-gray-700 font-medium mb-2">Masukkan URI Proxy, satu atau beberapa Detail Akun:</label>
@@ -288,7 +302,11 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             <div id="messageBox" class="message-box" style="display: none;"></div>
         </div>
     </div>
+    
+    <!-- Kontainer untuk Kutipan Hadis Dinamis -->
+    <div id="hadithQuoteContainer" class="hadith-quote-container"></div>
 
+    <!-- Link Join Telegram di luar container utama -->
     <div class="footer-link-container">
         <a href="https://t.me/srpcomgroup" target="_blank" class="footer-link">
             join : t.me/srpcomgroup
@@ -303,6 +321,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         const yamlOutputElement = document.getElementById('yamlOutput');
         const messageBoxElement = document.getElementById('messageBox');
         const customTooltipElement = document.getElementById('customTooltip'); 
+        const hadithQuoteContainer = document.getElementById('hadithQuoteContainer'); 
 
         const btnVidio = document.getElementById('btnVidio');
         const btnXcvip = document.getElementById('btnXcvip');
@@ -314,7 +333,23 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         const btnExportTxt = document.getElementById('btnExportTxt');
         const btnExportFullConfig = document.getElementById('btnExportFullConfig'); 
 
-        let selectedPaketSuffix = ''; // Variabel global untuk menyimpan akhiran nama file
+        let selectedPaketSuffix = ''; 
+
+        const hadithQuotes = [
+            "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lain.\" (HR. Ahmad)",
+            "\"Amal yang paling dicintai oleh Allah adalah yang paling terus-menerus meskipun sedikit.\" (HR. Bukhari & Muslim)",
+            "\"Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.\" (HR. Muslim)",
+            "\"Senyummu di hadapan saudaramu adalah sedekah bagimu.\" (HR. Tirmidzi)",
+            "\"Orang yang kuat bukanlah dia yang pandai bergulat, tetapi orang yang kuat adalah dia yang mampu mengendalikan dirinya ketika marah.\" (HR. Bukhari & Muslim)",
+            "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\" (HR. Muslim)"
+        ];
+
+        function displayRandomHadith() {
+            if (hadithQuoteContainer) {
+                const randomIndex = Math.floor(Math.random() * hadithQuotes.length);
+                hadithQuoteContainer.textContent = hadithQuotes[randomIndex];
+            }
+        }
 
         function showMessage(msg, type) {
             messageBoxElement.textContent = msg;
@@ -653,6 +688,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         }
 
         function performConversion(options = {}) {
+            displayRandomHadith(); 
             const { bugHost = '', isZoom = false, sniOverrideHost = '', useBugAsServerOnly = false, isAvaWcMode = false } = options;
             const rawInput = proxyUriInputElement.value.trim();
 
@@ -990,6 +1026,7 @@ dns:
         window.onload = () => {
             proxyUriInputElement.value = ''; 
             proxyUriInputElement.classList.remove('textarea-filled'); 
+            displayRandomHadith(); // Tampilkan kutipan saat halaman dimuat
             showMessage('Tempel URI Proxy atau Detail Akun, lalu klik Konversi atau pilih opsi Bug.', 'info');
         };
 
