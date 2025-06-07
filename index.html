@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM URL Converter v.3.1</title>
+    <title>SRPCOM URL Converter v.3.2</title>
     <!-- Favicon -->
     <link rel="icon" href="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -226,7 +226,7 @@
     <div class="header-container">
         <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img"
              onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
-        <h1 class="main-title-text">SRPCOM URL CONVERTER v.3.1</h1>
+        <h1 class="main-title-text">SRPCOM URL CONVERTER v.3.2</h1>
     </div>
 
     <div class="container">
@@ -331,41 +331,41 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
         let selectedPaketSuffix = ''; 
 
-        // Database kutipan hadis yang diperluas
+        // Database kutipan hadis yang diperluas (tanpa perawi)
         const hadithQuotes = [
-            "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lain.\" (HR. Ahmad)",
-            "\"Amal yang paling dicintai oleh Allah adalah yang paling terus-menerus meskipun sedikit.\" (HR. Bukhari & Muslim)",
-            "\"Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.\" (HR. Muslim)",
-            "\"Senyummu di hadapan saudaramu adalah sedekah bagimu.\" (HR. Tirmidzi)",
-            "\"Orang yang kuat bukanlah dia yang pandai bergulat, tetapi orang yang kuat adalah dia yang mampu mengendalikan dirinya ketika marah.\" (HR. Bukhari & Muslim)",
-            "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\" (HR. Muslim)",
-            "\"Setiap kebaikan adalah sedekah.\" (HR. Bukhari & Muslim)",
-            "\"Jauhilah olehmu sifat hasad (dengki), karena sesungguhnya hasad itu memakan kebaikan-kebaikan sebagaimana api memakan kayu bakar.\" (HR. Abu Dawud)",
-            "\"Barangsiapa yang tidak menyayangi, maka ia tidak akan disayangi.\" (HR. Bukhari)",
-            "\"Tinggalkanlah apa yang meragukanmu kepada apa yang tidak meragukanmu.\" (HR. Tirmidzi & An-Nasa'i)",
-            "\"Sebagian dari kebaikan Islam seseorang adalah meninggalkan apa yang tidak bermanfaat baginya.\" (HR. Tirmidzi)",
-            "\"Bertakwalah kepada Allah di mana pun kamu berada, iringilah perbuatan buruk dengan perbuatan baik yang akan menghapusnya, dan bergaullah dengan manusia dengan akhlak yang baik.\" (HR. Tirmidzi)",
-            "\"Dua nikmat yang banyak manusia tertipu di dalamnya, yaitu kesehatan dan waktu luang.\" (HR. Bukhari)",
-            "\"Barangsiapa yang beriman kepada Allah dan hari akhir, maka hendaklah ia berkata baik atau diam.\" (HR. Bukhari & Muslim)",
-            "\"Setiap anak Adam sering berbuat salah, dan sebaik-baik orang yang berbuat salah adalah yang mau bertaubat.\" (HR. Tirmidzi)",
-            "\"Sesungguhnya kejujuran akan membimbing pada kebaikan, dan kebaikan itu akan membimbing ke surga.\" (HR. Bukhari & Muslim)",
-            "\"Permudahlah dan jangan mempersulit, berilah kabar gembira dan jangan membuat orang lari.\" (HR. Bukhari & Muslim)",
-            "\"Takutlah kepada neraka meskipun hanya dengan (sedekah) sebiji kurma.\" (HR. Bukhari)",
-            "\"Ikhlaslah dalam beramal, niscaya cukup bagimu amalan yang sedikit.\" (HR. Al-Hakim)",
-            "\"Barangsiapa yang ingin dilapangkan rezekinya dan dipanjangkan umurnya, maka hendaklah ia menyambung tali silaturahmi.\" (HR. Bukhari)",
-            "\"Sesungguhnya amalan itu tergantung pada niatnya, dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan.\" (HR. Bukhari & Muslim)",
-            "\"Bukanlah kekayaan itu karena banyaknya harta, tetapi kekayaan yang hakiki adalah kekayaan jiwa (hati).\" (HR. Bukhari & Muslim)",
-            "\"Doa adalah senjata orang mukmin.\" (HR. Al-Hakim)",
-            "\"Kebersihan adalah sebagian dari iman.\" (HR. Muslim)",
-            "\"Malu adalah bagian dari iman.\" (HR. Bukhari)",
-            "\"Berilah makan orang yang lapar, jenguklah orang yang sakit, dan bebaskanlah tawanan.\" (HR. Bukhari)",
-            "\"Tidak ada suatu pemberian yang lebih baik dari seorang ayah kepada anaknya selain dari pendidikan yang baik.\" (HR. Tirmidzi)",
-            "\"Jagalah Allah, niscaya Allah akan menjagamu.\" (HR. Tirmidzi)",
-            "\"Saling memberi hadiahlah kalian, niscaya kalian akan saling mencintai.\" (HR. Bukhari dalam Al-Adab Al-Mufrad)",
-            "\"Barangsiapa yang memudahkan urusan orang lain, pasti Allah akan memudahkannya di dunia dan di akhirat.\" (HR. Muslim)",
-            "\"Sesungguhnya Allah menyukai jika salah seorang dari kalian melakukan suatu pekerjaan, ia melakukannya dengan baik (itqan).\" (HR. Al-Baihaqi)",
-            "\"Tangan di atas lebih baik daripada tangan di bawah.\" (HR. Bukhari & Muslim)",
-            "\"Dunia ini adalah perhiasan, dan sebaik-baik perhiasan dunia adalah wanita shalihah.\" (HR. Muslim)"
+            "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lain.\"",
+            "\"Amal yang paling dicintai oleh Allah adalah yang paling terus-menerus meskipun sedikit.\"",
+            "\"Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.\"",
+            "\"Senyummu di hadapan saudaramu adalah sedekah bagimu.\"",
+            "\"Orang yang kuat bukanlah dia yang pandai bergulat, tetapi orang yang kuat adalah dia yang mampu mengendalikan dirinya ketika marah.\"",
+            "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\"",
+            "\"Setiap kebaikan adalah sedekah.\"",
+            "\"Jauhilah olehmu sifat hasad (dengki), karena sesungguhnya hasad itu memakan kebaikan-kebaikan sebagaimana api memakan kayu bakar.\"",
+            "\"Barangsiapa yang tidak menyayangi, maka ia tidak akan disayangi.\"",
+            "\"Tinggalkanlah apa yang meragukanmu kepada apa yang tidak meragukanmu.\"",
+            "\"Sebagian dari kebaikan Islam seseorang adalah meninggalkan apa yang tidak bermanfaat baginya.\"",
+            "\"Bertakwalah kepada Allah di mana pun kamu berada, iringilah perbuatan buruk dengan perbuatan baik yang akan menghapusnya, dan bergaullah dengan manusia dengan akhlak yang baik.\"",
+            "\"Dua nikmat yang banyak manusia tertipu di dalamnya, yaitu kesehatan dan waktu luang.\"",
+            "\"Barangsiapa yang beriman kepada Allah dan hari akhir, maka hendaklah ia berkata baik atau diam.\"",
+            "\"Setiap anak Adam sering berbuat salah, dan sebaik-baik orang yang berbuat salah adalah yang mau bertaubat.\"",
+            "\"Sesungguhnya kejujuran akan membimbing pada kebaikan, dan kebaikan itu akan membimbing ke surga.\"",
+            "\"Permudahlah dan jangan mempersulit, berilah kabar gembira dan jangan membuat orang lari.\"",
+            "\"Takutlah kepada neraka meskipun hanya dengan (sedekah) sebiji kurma.\"",
+            "\"Ikhlaslah dalam beramal, niscaya cukup bagimu amalan yang sedikit.\"",
+            "\"Barangsiapa yang ingin dilapangkan rezekinya dan dipanjangkan umurnya, maka hendaklah ia menyambung tali silaturahmi.\"",
+            "\"Sesungguhnya amalan itu tergantung pada niatnya, dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan.\"",
+            "\"Bukanlah kekayaan itu karena banyaknya harta, tetapi kekayaan yang hakiki adalah kekayaan jiwa (hati).\"",
+            "\"Doa adalah senjata orang mukmin.\"",
+            "\"Kebersihan adalah sebagian dari iman.\"",
+            "\"Malu adalah bagian dari iman.\"",
+            "\"Berilah makan orang yang lapar, jenguklah orang yang sakit, dan bebaskanlah tawanan.\"",
+            "\"Tidak ada suatu pemberian yang lebih baik dari seorang ayah kepada anaknya selain dari pendidikan yang baik.\"",
+            "\"Jagalah Allah, niscaya Allah akan menjagamu.\"",
+            "\"Saling memberi hadiahlah kalian, niscaya kalian akan saling mencintai.\"",
+            "\"Barangsiapa yang memudahkan urusan orang lain, pasti Allah akan memudahkannya di dunia dan di akhirat.\"",
+            "\"Sesungguhnya Allah menyukai jika salah seorang dari kalian melakukan suatu pekerjaan, ia melakukannya dengan baik (itqan).\"",
+            "\"Tangan di atas lebih baik daripada tangan di bawah.\"",
+            "\"Dunia ini adalah perhiasan, dan sebaik-baik perhiasan dunia adalah wanita shalihah.\""
         ];
 
         function displayRandomHadith() {
@@ -412,7 +412,8 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             const decodedJsonString = decodeBase64(base64EncodedJson);
             const config = JSON.parse(decodedJsonString);
 
-            const name = config.ps || 'VMess_Proxy';
+            const baseName = config.ps || 'VMess_Proxy';
+            const name = baseName + selectedPaketSuffix; // Menggabungkan nama dengan suffix paket
             const originalServer = config.add;
             const port = parseInt(config.port, 10);
             const uuid = config.id;
@@ -512,20 +513,21 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             if (isNaN(port)) { throw new Error('URI VLESS tidak valid: Port harus berupa angka.'); }
 
             let queryParams = {};
-            let remark = '';
+            let baseName = '';
             if (queryAndRemarkPart) {
                 const hashIndex = queryAndRemarkPart.indexOf('#');
                 let queryString = queryAndRemarkPart;
                 if (hashIndex !== -1) {
                     queryString = queryAndRemarkPart.substring(0, hashIndex);
-                    remark = decodeURIComponent(queryAndRemarkPart.substring(hashIndex + 1));
+                    baseName = decodeURIComponent(queryAndRemarkPart.substring(hashIndex + 1));
                 }
                 queryString.split('&').forEach(param => {
                     const [key, value] = param.split('=');
                     if (key && value) { queryParams[key] = decodeURIComponent(value); }
                 });
             }
-            if (!remark) { remark = `vless-${originalServer}`; }
+            if (!baseName) { baseName = `vless-${originalServer}`; }
+            const name = baseName + selectedPaketSuffix; // Menggabungkan nama dengan suffix paket
 
             const tlsEnabled = queryParams.security === 'tls';
             const networkType = queryParams.type || 'tcp';
@@ -572,7 +574,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
                 }
             }
 
-            let yamlConfig = `- name: ${remark}\n`;
+            let yamlConfig = `- name: ${name}\n`;
             yamlConfig += `  server: ${serverInYaml}\n`;
             yamlConfig += `  port: ${port}\n`;
             yamlConfig += `  type: vless\n`;
@@ -615,20 +617,21 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             if (isNaN(port)) { throw new Error('URI Trojan tidak valid: Port harus berupa angka.'); }
 
             let queryParams = {};
-            let remark = '';
+            let baseName = '';
             if (queryAndRemarkPart) {
                 const hashIndex = queryAndRemarkPart.indexOf('#');
                 let queryString = queryAndRemarkPart;
                 if (hashIndex !== -1) {
                     queryString = queryAndRemarkPart.substring(0, hashIndex);
-                    remark = decodeURIComponent(queryAndRemarkPart.substring(hashIndex + 1));
+                    baseName = decodeURIComponent(queryAndRemarkPart.substring(hashIndex + 1));
                 }
                 queryString.split('&').forEach(param => {
                     const [key, value] = param.split('=');
                     if (key && value) { queryParams[key] = decodeURIComponent(value); }
                 });
             }
-            if (!remark) { remark = `trojan-${originalServer}`; }
+            if (!baseName) { baseName = `trojan-${originalServer}`; }
+            const name = baseName + selectedPaketSuffix; // Menggabungkan nama dengan suffix paket
 
             const tls = true; 
             const network = queryParams.type === 'ws' || queryParams.path ? 'ws' : 'tcp'; 
@@ -673,7 +676,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
                 }
             }
 
-            let yamlConfig = `- name: ${remark}\n`;
+            let yamlConfig = `- name: ${name}\n`;
             yamlConfig += `  type: trojan\n`;
             yamlConfig += `  server: ${serverInYaml}\n`;
             yamlConfig += `  port: ${port}\n`;
@@ -868,7 +871,9 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
         function sanitizeFilename(filename) {
             if (!filename) return 'config'; 
-            let sanitized = filename.replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
+            // Menghapus suffix paket jika ada, sebelum sanitasi
+            let baseName = filename.replace(/_vidio$|_xcvip$|_xcvipwc$|_vidiosni$|_avawc$/, '');
+            let sanitized = baseName.replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
             return sanitized.substring(0, 50) || 'config'; 
         }
 
@@ -877,7 +882,7 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
             if (textToExport && !textToExport.startsWith('Error:') && !textToExport.startsWith('proxies:\n\n') && textToExport.trim().toLowerCase() !== 'proxies:') {
                 try {
                     const firstProxyName = extractFirstNameFromYaml(textToExport);
-                    const filename = sanitizeFilename(firstProxyName) + '.txt';
+                    const filename = `${sanitizeFilename(firstProxyName)}${selectedPaketSuffix}.txt`; // Nama file baru
 
                     const blob = new Blob([textToExport], { type: 'text/plain;charset=utf-8' });
                     const link = document.createElement('a');
@@ -907,7 +912,8 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
 
             const proxyNames = extractAllProxyNamesFromYamlOutput(convertedProxiesYaml);
             const firstProxyName = proxyNames.length > 0 ? proxyNames[0] : 'default'; 
-            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}${selectedPaketSuffix}.yaml`; 
+            // Nama file sekarang mengambil nama dasar (tanpa suffix) dan menambahkan suffix dari tombol
+            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}.yaml`; 
 
             let fullConfig = `port: 7890
 socks-port: 7891
