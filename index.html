@@ -3,314 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM URL Converter v.3.2</title>
+    <title>SRPCOM URL Converter v.4.1 (Interactive UI)</title>
     <!-- Favicon -->
     <link rel="icon" href="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Keyframes untuk animasi */
-        @keyframes animateRainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes animatePulsatingBorder {
-            0% { box-shadow: 0 0 8px 0 rgba(34, 197, 94, 0.3); }
-            50% { box-shadow: 0 0 16px 4px rgba(34, 197, 94, 0.5); }
-            100% { box-shadow: 0 0 8px 0 rgba(34, 197, 94, 0.3); }
-        }
-        @keyframes animateRunningText {
-            to {
-                background-position: -200% center;
-            }
-        }
+        @keyframes animateRainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes animateRunningText { to { background-position: -200% center; } }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            padding-bottom: 4rem; 
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: animateRainbow 15s ease infinite;
-        }
-        .header-container {
-            display: flex;
-            align-items: center; 
-            justify-content: center; 
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            gap: 0.75rem; 
-        }
-        .logo-img { 
-            max-width: 75px; 
-            height: auto; 
-            border-radius: 0.5rem; 
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
-        }
-        .main-title-text { 
-            font-size: 1.875rem; 
-            font-weight: 700; 
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: animateRunningText 4s linear infinite;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        }
+        /* --- Animasi Blinking Teks & Border --- */
+        @keyframes blink-green-text { 50% { color: #22c55e; text-shadow: 0 0 10px #22c55e; } }
+        @keyframes blink-orange-border { 50% { border-color: #f97316; box-shadow: 0 0 12px #f97316; } }
+        @keyframes blink-purple-border { 50% { border-color: #a855f7; box-shadow: 0 0 12px #a855f7; } }
+        @keyframes blink-indigo-border { 50% { border-color: #6366f1; box-shadow: 0 0 12px #6366f1; } }
+        @keyframes blink-red-border { 50% { border-color: #ef4444; box-shadow: 0 0 12px #ef4444; } }
+        @keyframes blink-green-border { 50% { border-color: #22c55e; box-shadow: 0 0 12px #22c55e; } }
+        @keyframes blink-yellow-border { 50% { border-color: #facc15; box-shadow: 0 0 12px #facc15; } }
+        @keyframes blink-blue-border { 50% { border-color: #3b82f6; box-shadow: 0 0 12px #3b82f6; } }
 
-        .container {
-            background-color: rgba(220, 252, 231, 0.85);
-            backdrop-filter: blur(8px); 
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            max-width: 900px;
-            width: 95%; 
-            margin: 0 auto 2rem auto; 
-        }
-        textarea {
-            resize: vertical;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease; 
-            border: 2px solid transparent; 
-        }
-        .textarea-pulsating-border {
-             border-color: #22c55e; 
-             animation: animatePulsatingBorder 2.5s infinite ease-in-out;
-        }
-        .textarea-filled {
-            background-color: #f0fdf4; 
-        }
-        pre {
-            white-space: pre-wrap;
-            word-break: break-all;
-            background-color: #f3f4f6; 
-            border: 1px solid #d1d5db; 
-            border-radius: 0.5rem; 
-            padding: 1rem; 
-            color: #1f2937; 
-            font-size: 0.875rem; 
-            overflow-x: auto; 
-            min-height: 150px; 
-        }
-        .message-box {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .message-box.success {
-            background-color: #d1fae5; 
-            color: #065f46; 
-        }
-        .message-box.error {
-            background-color: #fee2e2; 
-            color: #991b1b; 
-        }
-        .message-box.info {
-            background-color: #dbeafe; 
-            color: #1e40af; 
-        }
-        .action-button {
-            position: relative;
-            font-weight: 600; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 0.5rem; 
-            border: none;
-            border-bottom: 4px solid rgba(0,0,0,0.3); 
-            transition: all 0.1s ease-in-out;
-        }
-        .action-button:hover {
-            transform: translateY(-2px); 
-        }
-        .action-button:active {
-            transform: translateY(2px); 
-            border-bottom-width: 2px; 
-        }
+        /* --- Style Dasar --- */
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; padding-bottom: 4rem; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: animateRainbow 15s ease infinite; }
+        .header-container { display: flex; align-items: center; justify-content: center; margin-top: 1rem; margin-bottom: 0.5rem; gap: 0.75rem; }
+        .logo-img { max-width: 75px; height: auto; border-radius: 0.5rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)); }
+        .main-title-text { font-size: 1.875rem; font-weight: 700; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: animateRunningText 4s linear infinite; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); }
+        .container { background-color: rgba(220, 252, 231, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); padding: 2rem; max-width: 900px; width: 95%; margin: 0 auto 2rem auto; }
+        
+        /* --- Style Interaktif --- */
+        textarea { resize: vertical; transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, height 0.3s ease; border: 2px solid transparent; }
+        textarea.blinking-orange-border { animation: blink-orange-border 1.5s infinite; }
+        textarea.static-green-border { border-color: #22c55e; background-color: #dcfce7 !important; }
+        textarea.input-processed { background-color: #e5e7eb !important; border-color: #9ca3af !important; animation: none !important; }
 
-        @media (max-width: 768px) {
-            .button-grid {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            }
-            .button-actions-group {
-                flex-direction: column; 
-                gap: 0.75rem; 
-            }
-            .button-actions-group .action-button {
-                width: 100%; 
-            }
-            .header-container {
-                flex-direction: column; 
-                gap: 0.25rem;
-            }
-            .main-title-text {
-                font-size: 1.5rem; 
-            }
-        }
-         @media (max-width: 480px) {
-            .container {
-                padding: 1.5rem; 
-            }
-            .action-button {
-                padding: 0.625rem 1rem; 
-                font-size: 0.875rem; 
-            }
-            .button-grid {
-                 grid-template-columns: 1fr; 
-            }
-            .logo-img { 
-                max-width: 60px; 
-            }
-             .main-title-text {
-                font-size: 1.25rem; 
-            }
-        }
-        .footer-link-container {
-            text-align: center;
-            margin-top: 1rem; 
-            padding-bottom: 1rem; 
-        }
-        .footer-link {
-            color: #000000; 
-            text-decoration: none;
-            font-weight: 600; 
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.4); 
-        }
-        .footer-link:hover {
-            text-decoration: underline;
-            color: #1f2937; 
-        }
-        .hadith-quote-container {
-            text-align: center;
-            margin-top: 2rem;
-            padding: 0 1rem;
-            font-style: italic;
-            color: white;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-            min-height: 40px; 
-        }
-        .custom-tooltip {
-            position: absolute;
-            background-color: rgba(0, 0, 0, 0.65); 
-            color: #a7f3d0; 
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            z-index: 100; 
-            display: none; 
-            max-width: 300px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            pointer-events: none; 
-        }
-        .custom-tooltip span { 
-             pointer-events: auto; 
-        }
-        .custom-tooltip a {
-            color: #6ee7b7; 
-            text-decoration: underline;
-            pointer-events: auto; 
-        }
-        .custom-tooltip a:hover {
-            color: #34d399; 
-        }
+        pre { white-space: pre-wrap; word-break: break-all; border: 2px solid #d1d5db; border-radius: 0.5rem; padding: 1rem; color: #1f2937; font-size: 0.875rem; overflow-x: auto; min-height: 150px; transition: background-color 0.3s ease, border-color 0.3s ease; }
+        pre.blinking-purple-border { animation: blink-purple-border 1.5s infinite; }
+        pre.blinking-indigo-border { animation: blink-indigo-border 1.5s infinite; }
+        pre.blinking-red-border { animation: blink-red-border 1.5s infinite; }
+        pre.blinking-green-border { animation: blink-green-border 1.5s infinite; }
+        pre.blinking-yellow-border { animation: blink-yellow-border 1.5s infinite; }
+        pre.blinking-blue-border { animation: blink-blue-border 1.5s infinite; }
+
+        .message-box { margin-top: 1rem; padding: 0.75rem; border-radius: 0.5rem; text-align: center; font-size: 0.875rem; transition: opacity 0.5s ease-in-out, transform 0.3s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease; }
+        .message-box.success { background-color: #d1fae5; color: #065f46; }
+        .message-box.error { background-color: #fee2e2; color: #991b1b; }
+        .message-box.info { background-color: #dbeafe; color: #1e40af; }
+
+        .action-button { position: relative; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; border-bottom: 4px solid rgba(0,0,0,0.3); transition: all 0.15s ease-in-out; }
+        .action-button:hover:not(:disabled) { transform: translateY(-2px); }
+        .action-button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 2px; }
+        .action-button:disabled { background-color: #9ca3af !important; border-bottom-color: #4b5563 !important; color: #e5e7eb !important; cursor: not-allowed; }
+
+        .hadith-quote-container { text-align: center; margin-top: 2rem; padding: 0 1rem; font-style: italic; color: white; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); min-height: 40px; }
+        .footer-link-container { text-align: center; margin-top: 1rem; padding-bottom: 1rem; }
+        .footer-link { color: #000000; text-decoration: none; font-weight: 600; text-shadow: 1px 1px 2px rgba(255,255,255,0.4); }
+        .footer-link:hover { text-decoration: underline; color: #1f2937; }
+        
+        .custom-tooltip { position: absolute; background-color: rgba(0, 0, 0, 0.65); color: #a7f3d0; padding: 8px 12px; border-radius: 6px; font-size: 0.875rem; z-index: 100; display: none; max-width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); pointer-events: none; }
+        .custom-tooltip span, .custom-tooltip a { pointer-events: auto; }
+        .custom-tooltip a { color: #6ee7b7; text-decoration: underline; }
+        .custom-tooltip a:hover { color: #34d399; }
+
+        @media (max-width: 768px) { .header-container { flex-direction: column; gap: 0.25rem; } .main-title-text { font-size: 1.5rem; } .button-actions-group { flex-direction: column; gap: 0.75rem; } .button-actions-group .action-button { width: 100%; } }
+        @media (max-width: 480px) { .container { padding: 1.5rem; } .main-title-text { font-size: 1.25rem; } }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen p-4">
     
-    <!-- Header Container untuk Logo dan Judul -->
     <div class="header-container">
-        <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img"
-             onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
-        <h1 class="main-title-text">SRPCOM URL CONVERTER v.3.2</h1>
+        <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img" onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
+        <h1 class="main-title-text">SRPCOM URL CONVERTER v.4.1</h1>
     </div>
 
     <div class="container">
-        <!-- Konten utama di sini -->
         <div class="space-y-6">
             <div>
-                <label for="proxyUriInput" class="block text-gray-700 font-medium mb-2">Masukkan URI Proxy, satu atau beberapa Detail Akun:</label>
+                <label id="initialMessage" for="proxyUriInput" class="block text-center text-gray-600 font-medium mb-2"></label>
                 <textarea
                     id="proxyUriInput"
                     rows="8"
-                    class="w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg bg-white textarea-pulsating-border"
-                    placeholder="Contoh URI Mentah (pisahkan dengan | atau ENTER):
-vmess://...
-vless://... | trojan://...
-
-Atau Detail Akun (tempel satu atau beberapa blok):
-━━━━━━━━━━━━━━━━━━━━
-[XRAY/TROJAN_WS]
-...
-LINK WS TLS : trojan://...
-EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
-━━━━━━━━━━━━━━━━━━━━
-(Tempel blok akun lain di sini jika ada)
-━━━━━━━━━━━━━━━━━━━━"
+                    class="w-full p-3 rounded-lg focus:outline-none bg-white"
+                    placeholder="Contoh: vmess://... atau beberapa baris detail akun"
                 ></textarea>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 button-grid">
-                <button id="btnVidio" class="action-button bg-purple-600 hover:bg-purple-700 text-white">
-                    Vidio (quiz.vidio.com)
-                </button>
-                <button id="btnXcvip" class="action-button bg-indigo-600 hover:bg-indigo-700 text-white">
-                    XCVIP (xcvip.srpcom.online)
-                </button>
-                <button id="btnZoom" class="action-button bg-red-600 hover:bg-red-700 text-white">
-                    XCVIP WC (support.zoom.us)
-                </button>
-                <button id="btnVidioSni" class="action-button bg-green-600 hover:bg-green-700 text-white">
-                    vidioSNI
-                </button>
-                <button id="btnAvaWc" class="action-button bg-yellow-400 hover:bg-yellow-500 text-black">
-                    avaWC
-                </button>
-            </div>
-
-            <div class="flex justify-center mt-2">
-                <button id="btnConvert" class="action-button bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 text-base">
-                    Konversi ke YAML
-                </button>
+                <button id="btnVidio" class="action-button bug-button bg-purple-600 hover:bg-purple-700 text-white">Vidio</button>
+                <button id="btnXcvip" class="action-button bug-button bg-indigo-600 hover:bg-indigo-700 text-white">XCVIP</button>
+                <button id="btnZoom" class="action-button bug-button bg-red-600 hover:bg-red-700 text-white">XCVIP WC</button>
+                <button id="btnVidioSni" class="action-button bug-button bg-green-600 hover:bg-green-700 text-white">vidioSNI</button>
+                <button id="btnAvaWc" class="action-button bug-button bg-yellow-400 hover:bg-yellow-500 text-black">avaWC</button>
+                <button id="btnConvert" class="action-button bug-button bg-white hover:bg-gray-200 text-black">Tanpa bug</button>
             </div>
 
             <div>
-                <label for="yamlOutput" class="block text-gray-700 font-medium mb-2">Konfigurasi Proxy YAML:</label>
+                <label for="yamlOutput" class="block text-gray-700 font-medium mb-2 mt-6">Konfigurasi Proxy YAML:</label>
                 <pre id="yamlOutput"></pre>
             </div>
 
             <div class="flex flex-col sm:flex-row justify-center gap-4 button-actions-group">
-                <button id="btnCopy" class="action-button bg-teal-600 hover:bg-teal-700 text-white">
-                    Salin YAML
-                </button>
-                <button id="btnExportTxt" class="action-button bg-orange-500 hover:bg-orange-600 text-white">
-                    Export ke .txt
-                </button>
-                <button id="btnExportFullConfig" class="action-button bg-black hover:bg-gray-800 text-white">
-                    Config Siap Pakai
-                </button>
+                <button id="btnCopy" class="action-button action-button-lower bg-teal-600 hover:bg-teal-700 text-white">Salin YAML</button>
+                <button id="btnExportTxt" class="action-button action-button-lower bg-orange-500 hover:bg-orange-600 text-white">Export ke .txt</button>
+                <button id="btnExportFullConfig" class="action-button action-button-lower bg-black hover:bg-gray-800 text-white">Config Siap Pakai</button>
             </div>
 
             <div id="messageBox" class="message-box" style="display: none;"></div>
         </div>
     </div>
     
-    <!-- Kontainer untuk Kutipan Hadis Dinamis -->
     <div id="hadithQuoteContainer" class="hadith-quote-container"></div>
-
-    <!-- Link Join Telegram di luar container utama -->
     <div class="footer-link-container">
-        <a href="https://t.me/srpcomgroup" target="_blank" class="footer-link">
-            join : t.me/srpcomgroup
-        </a>
+        <a href="https://t.me/srpcomgroup" target="_blank" class="footer-link">join : t.me/srpcomgroup</a>
     </div>
-
     <div id="customTooltip" class="custom-tooltip"></div>
-
 
     <script>
         const proxyUriInputElement = document.getElementById('proxyUriInput');
@@ -318,748 +123,352 @@ EXPIRED ON : TTTT-BB-HH JJ:MM:SS ZONA
         const messageBoxElement = document.getElementById('messageBox');
         const customTooltipElement = document.getElementById('customTooltip'); 
         const hadithQuoteContainer = document.getElementById('hadithQuoteContainer'); 
+        const initialMessageElement = document.getElementById('initialMessage');
 
-        const btnVidio = document.getElementById('btnVidio');
-        const btnXcvip = document.getElementById('btnXcvip');
-        const btnZoom = document.getElementById('btnZoom');
-        const btnVidioSni = document.getElementById('btnVidioSni');
-        const btnAvaWc = document.getElementById('btnAvaWc');
-        const btnConvert = document.getElementById('btnConvert');
-        const btnCopy = document.getElementById('btnCopy');
-        const btnExportTxt = document.getElementById('btnExportTxt');
-        const btnExportFullConfig = document.getElementById('btnExportFullConfig'); 
-
+        const bugButtons = document.querySelectorAll('.bug-button');
+        const lowerActionButtons = document.querySelectorAll('.action-button-lower');
+        
         let selectedPaketSuffix = ''; 
+        let isCollapsed = false;
 
-        // Database kutipan hadis yang diperluas (tanpa perawi)
+        const modificationRules = {
+            'btnVidio':    { newServer: 'quiz.vidio.com' },
+            'btnXcvip':    { newServer: 'xcvip.srpcom.online' },
+            'btnZoom':     { newServer: 'support.zoom.us',       prefixSniHost: 'support.zoom.us.' },
+            'btnVidioSni': { newSni: 'quiz.vidio.com',          newHost: 'quiz.vidio.com' },
+            'btnAvaWc':    { newServer: 'ava.game.naver.com',    prefixSniHost: 'ava.game.naver.com.' },
+            'btnConvert':  {} // No modifications
+        };
+
+        const buttonStyles = {
+            'btnVidio': { border: 'blinking-purple-border', bg: 'bg-purple-100' },
+            'btnXcvip': { border: 'blinking-indigo-border', bg: 'bg-indigo-100' },
+            'btnZoom': { border: 'blinking-red-border', bg: 'bg-red-100' },
+            'btnVidioSni': { border: 'blinking-green-border', bg: 'bg-green-100' },
+            'btnAvaWc': { border: 'blinking-yellow-border', bg: 'bg-yellow-100' },
+            'btnConvert': { border: 'blinking-blue-border', bg: 'bg-blue-100' }
+        };
+
         const hadithQuotes = [
-            "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lain.\"",
-            "\"Amal yang paling dicintai oleh Allah adalah yang paling terus-menerus meskipun sedikit.\"",
-            "\"Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.\"",
-            "\"Senyummu di hadapan saudaramu adalah sedekah bagimu.\"",
-            "\"Orang yang kuat bukanlah dia yang pandai bergulat, tetapi orang yang kuat adalah dia yang mampu mengendalikan dirinya ketika marah.\"",
-            "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\"",
-            "\"Setiap kebaikan adalah sedekah.\"",
-            "\"Jauhilah olehmu sifat hasad (dengki), karena sesungguhnya hasad itu memakan kebaikan-kebaikan sebagaimana api memakan kayu bakar.\"",
-            "\"Barangsiapa yang tidak menyayangi, maka ia tidak akan disayangi.\"",
-            "\"Tinggalkanlah apa yang meragukanmu kepada apa yang tidak meragukanmu.\"",
-            "\"Sebagian dari kebaikan Islam seseorang adalah meninggalkan apa yang tidak bermanfaat baginya.\"",
-            "\"Bertakwalah kepada Allah di mana pun kamu berada, iringilah perbuatan buruk dengan perbuatan baik yang akan menghapusnya, dan bergaullah dengan manusia dengan akhlak yang baik.\"",
-            "\"Dua nikmat yang banyak manusia tertipu di dalamnya, yaitu kesehatan dan waktu luang.\"",
-            "\"Barangsiapa yang beriman kepada Allah dan hari akhir, maka hendaklah ia berkata baik atau diam.\"",
-            "\"Setiap anak Adam sering berbuat salah, dan sebaik-baik orang yang berbuat salah adalah yang mau bertaubat.\"",
-            "\"Sesungguhnya kejujuran akan membimbing pada kebaikan, dan kebaikan itu akan membimbing ke surga.\"",
-            "\"Permudahlah dan jangan mempersulit, berilah kabar gembira dan jangan membuat orang lari.\"",
-            "\"Takutlah kepada neraka meskipun hanya dengan (sedekah) sebiji kurma.\"",
-            "\"Ikhlaslah dalam beramal, niscaya cukup bagimu amalan yang sedikit.\"",
-            "\"Barangsiapa yang ingin dilapangkan rezekinya dan dipanjangkan umurnya, maka hendaklah ia menyambung tali silaturahmi.\"",
-            "\"Sesungguhnya amalan itu tergantung pada niatnya, dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan.\"",
-            "\"Bukanlah kekayaan itu karena banyaknya harta, tetapi kekayaan yang hakiki adalah kekayaan jiwa (hati).\"",
-            "\"Doa adalah senjata orang mukmin.\"",
-            "\"Kebersihan adalah sebagian dari iman.\"",
-            "\"Malu adalah bagian dari iman.\"",
-            "\"Berilah makan orang yang lapar, jenguklah orang yang sakit, dan bebaskanlah tawanan.\"",
-            "\"Tidak ada suatu pemberian yang lebih baik dari seorang ayah kepada anaknya selain dari pendidikan yang baik.\"",
-            "\"Jagalah Allah, niscaya Allah akan menjagamu.\"",
-            "\"Saling memberi hadiahlah kalian, niscaya kalian akan saling mencintai.\"",
-            "\"Barangsiapa yang memudahkan urusan orang lain, pasti Allah akan memudahkannya di dunia dan di akhirat.\"",
-            "\"Sesungguhnya Allah menyukai jika salah seorang dari kalian melakukan suatu pekerjaan, ia melakukannya dengan baik (itqan).\"",
-            "\"Tangan di atas lebih baik daripada tangan di bawah.\"",
-            "\"Dunia ini adalah perhiasan, dan sebaik-baik perhiasan dunia adalah wanita shalihah.\""
+            "\"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia lain.\"", "\"Amal yang paling dicintai oleh Allah adalah yang paling terus-menerus meskipun sedikit.\"", "\"Barangsiapa menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan menuju surga.\"", "\"Senyummu di hadapan saudaramu adalah sedekah bagimu.\"", "\"Orang yang kuat bukanlah dia yang pandai bergulat, tetapi orang yang kuat adalah dia yang mampu mengendalikan dirinya ketika marah.\"", "\"Sesungguhnya Allah tidak melihat pada bentuk rupa dan harta kalian, tetapi Dia melihat pada hati dan amalan kalian.\"", "\"Setiap kebaikan adalah sedekah.\"", "\"Jauhilah olehmu sifat hasad (dengki), karena sesungguhnya hasad itu memakan kebaikan-kebaikan sebagaimana api memakan kayu bakar.\"", "\"Barangsiapa yang tidak menyayangi, maka ia tidak akan disayangi.\"", "\"Tinggalkanlah apa yang meragukanmu kepada apa yang tidak meragukanmu.\"", "\"Sebagian dari kebaikan Islam seseorang adalah meninggalkan apa yang tidak bermanfaat baginya.\"", "\"Bertakwalah kepada Allah di mana pun kamu berada, iringilah perbuatan buruk dengan perbuatan baik yang akan menghapusnya, dan bergaullah dengan manusia dengan akhlak yang baik.\"", "\"Dua nikmat yang banyak manusia tertipu di dalamnya, yaitu kesehatan dan waktu luang.\"", "\"Barangsiapa yang beriman kepada Allah dan hari akhir, maka hendaklah ia berkata baik atau diam.\"", "\"Setiap anak Adam sering berbuat salah, dan sebaik-baik orang yang berbuat salah adalah yang mau bertaubat.\"", "\"Sesungguhnya kejujuran akan membimbing pada kebaikan, dan kebaikan itu akan membimbing ke surga.\"", "\"Permudahlah dan jangan mempersulit, berilah kabar gembira dan jangan membuat orang lari.\"", "\"Takutlah kepada neraka meskipun hanya dengan (sedekah) sebiji kurma.\"", "\"Ikhlaslah dalam beramal, niscaya cukup bagimu amalan yang sedikit.\"", "\"Barangsiapa yang ingin dilapangkan rezekinya dan dipanjangkan umurnya, maka hendaklah ia menyambung tali silaturahmi.\"", "\"Sesungguhnya amalan itu tergantung pada niatnya, dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan.\"", "\"Bukanlah kekayaan itu karena banyaknya harta, tetapi kekayaan yang hakiki adalah kekayaan jiwa (hati).\"", "\"Dunia adalah penjara bagi orang mukmin dan surga bagi orang kafir.\"", "\"Allah tidak akan menyiksa suatu kaum hingga mereka meminta ampun.\"", "\"Agama itu mudah, maka janganlah kamu mempersulitnya.\"", "\"Malu adalah sebagian dari iman.\"", "\"Doa adalah senjatanya orang mukmin.\"", "\"Kebersihan adalah sebagian dari iman.\"", "\"Barangsiapa yang memudahkan urusan orang lain, maka Allah akan memudahkan urusannya di dunia dan akhirat.\"", "\"Tidak ada ketaatan kepada makhluk dalam bermaksiat kepada Khaliq (Pencipta).\"", "\"Cintailah kekasihmu sekadarnya saja, boleh jadi suatu saat ia akan menjadi orang yang kamu benci.\"", "\"Sabar adalah cahaya.\"", "\"Tangan di atas lebih baik daripada tangan di bawah.\"", "\"Seorang muslim adalah saudara bagi muslim lainnya.\"", "\"Barangsiapa menutupi aib seorang muslim, maka Allah akan menutupi aibnya di dunia dan akhirat.\"", "\"Setiap yang memabukkan adalah khamr, dan setiap khamr adalah haram.\"", "\"Berbakti kepada kedua orang tua adalah amalan yang paling utama.\"", "\"Sesungguhnya Allah menyukai orang yang bersin dan membenci orang yang menguap.\"", "\"Janganlah kalian saling membenci, saling mendengki, dan saling membelakangi.\"", "\"Barangsiapa yang diam, maka ia selamat.\"", "\"Puasa adalah perisai.\"", "\"Sedekah itu dapat memadamkan dosa sebagaimana air memadamkan api.\"", "\"Surga itu di bawah telapak kaki ibu.\"", "\"Berdoalah kepada Allah dalam keadaan yakin akan dikabulkan.\"", "\"Jika engkau tidak malu, maka berbuatlah sesukamu.\"", "\"Shalat adalah tiang agama.\"", "\"Sesungguhnya di dalam tubuh ada segumpal daging. Jika ia baik, maka baik pula seluruh tubuh. Jika ia rusak, maka rusak pula seluruh tubuh. Ketahuilah bahwa ia adalah hati.\"", "\"Tidaklah beriman salah seorang di antara kalian hingga ia mencintai saudaranya sebagaimana ia mencintai dirinya sendiri.\"", "\"Barangsiapa yang menipu kami, maka ia bukan dari golongan kami.\"", "\"Sesungguhnya Allah itu indah dan menyukai keindahan.\"", "\"Menuntut ilmu itu wajib bagi setiap muslim.\"", "\"Jauhilah tujuh perkara yang membinasakan.\"", "\"Jangan marah, maka bagimu surga.\"", "\"Dunia ini terlaknat, terlaknat pula apa yang ada di dalamnya, kecuali dzikir kepada Allah dan apa yang mengikutinya, seorang alim atau penuntut ilmu.\"", "\"Setiap jiwa akan merasakan mati.\"", "\"Sesungguhnya perbuatan-perbuatan itu dengan penutupnya (akhirnya).\"", "\"Orang yang menunjukkan kepada kebaikan, ia akan mendapat pahala seperti orang yang melakukannya.\"", "\"Tidak akan masuk surga orang yang dalam hatinya ada kesombongan seberat biji sawi.\"", "\"Makanlah dengan tangan kananmu dan makanlah dari apa yang dekat denganmu.\"", "\"Tidak ada hijrah setelah Fathu Makkah, tetapi yang ada adalah jihad dan niat.\"", "\"Dua kalimat yang ringan di lisan, berat di timbangan, dan dicintai oleh Ar-Rahman: Subhanallahi wa bihamdihi, Subhanallahil 'azhim.\"", "\"Ucapkanlah yang benar meskipun itu pahit.\"", "\"Seorang mukmin bagi mukmin lainnya adalah seperti sebuah bangunan yang saling menguatkan satu sama lain.\"", "\"Barangsiapa yang membaca satu huruf dari Al-Qur'an, maka baginya satu kebaikan, dan satu kebaikan itu dilipatgandakan menjadi sepuluh kebaikan.\"", "\"Hati-hatilah terhadap prasangka, karena prasangka adalah ucapan yang paling dusta.\"", "\"Barangsiapa yang berpuasa Ramadhan kemudian mengikutinya dengan puasa enam hari di bulan Syawal, maka ia seperti berpuasa setahun penuh.\"", "\"Tidak halal bagi seorang muslim untuk tidak menyapa saudaranya lebih dari tiga hari.\"", "\"Islam dibangun di atas lima perkara.\"", "\"Setiap bid'ah adalah sesat.\"", "\"Bertemanlah dengan orang yang beriman dan janganlah memakan makananmu kecuali orang yang bertakwa.\"", "\"Sesungguhnya Allah Maha Pemaaf dan menyukai pemaafan.\"", "\"Tiga orang yang doanya tidak tertolak: pemimpin yang adil, orang yang berpuasa hingga ia berbuka, dan doa orang yang terzalimi.\"", "\"Kunci shalat adalah bersuci, pengharamannya adalah takbir, dan penghalalannya adalah salam.\"", "\"Jika amanah telah disia-siakan, maka tunggulah hari kiamat.\"", "\"Barangsiapa yang membangun masjid karena Allah, maka Allah akan membangunkan baginya rumah di surga.\"", "\"Tuntutlah ilmu dari buaian hingga liang lahat.\"", "\"Seorang hamba tidak akan bergeser kakinya pada hari kiamat hingga ditanya tentang empat perkara.\"", "\"Janganlah salah seorang dari kalian meminum sambil berdiri.\"", "\"Jika kamu melihat orang yang memuji-muji, maka taburkanlah tanah di wajahnya.\"", "\"Barangsiapa yang serupa dengan suatu kaum, maka ia termasuk golongan mereka.\"", "\"Nikahilah wanita yang penyayang dan subur, karena aku akan berbangga dengan banyaknya jumlah kalian di hadapan umat-umat lain.\"", "\"Kuda itu diikatkan kebaikan pada ubun-ubunnya hingga hari kiamat.\"", "\"Tidak ada paksaan dalam agama.\"", "\"Riba itu memiliki tujuh puluh tiga pintu, yang paling ringan adalah seperti seseorang menzinahi ibunya.\"", "\"Zina mata adalah dengan melihat.\"", "\"Berobatlah wahai hamba-hamba Allah, karena sesungguhnya Allah tidak menurunkan penyakit melainkan Dia juga menurunkan obatnya.\"", "\"Barangsiapa yang ditanya tentang suatu ilmu lalu ia menyembunyikannya, maka ia akan dikekang dengan kekang dari api neraka pada hari kiamat.\"", "\"Fitnah itu tidur, semoga Allah melaknat orang yang membangunkannya.\"", "\"Sesungguhnya di antara pepohonan ada satu pohon yang daunnya tidak gugur, dan itu adalah perumpamaan seorang muslim.\"", "\"Perbanyaklah mengingat pemutus kelezatan, yaitu kematian.\"", "\"Celakalah bagi orang yang berbicara lalu ia berdusta untuk membuat orang lain tertawa. Celakalah ia, celakalah ia.\"", "\"Jadilah engkau di dunia ini seakan-akan orang asing atau seorang pengembara.\"", "\"Setiap kalian adalah pemimpin dan setiap kalian akan dimintai pertanggungjawaban atas kepemimpinannya.\"", "\"Balasan dari kebaikan adalah kebaikan setelahnya.\"", "\"Ikutilah sunnahku dan sunnah para Khulafaur Rasyidin yang mendapat petunjuk.\"", "\"Cukuplah seseorang dikatakan pendusta jika ia menceritakan setiap apa yang ia dengar.\"", "\"Barangsiapa yang keluar untuk mencari ilmu, maka ia berada di jalan Allah hingga ia kembali.\"", "\"Orang yang kikir tidak akan masuk surga.\""
         ];
+        
+        function displayRandomHadith() { if (hadithQuoteContainer) { const randomIndex = Math.floor(Math.random() * hadithQuotes.length); hadithQuoteContainer.textContent = hadithQuotes[randomIndex]; } }
+        function showMessage(msg, type) { messageBoxElement.textContent = msg; messageBoxElement.className = `message-box ${type}`; messageBoxElement.style.display = 'block'; messageBoxElement.style.opacity = 1; setTimeout(() => { messageBoxElement.style.opacity = 0; setTimeout(() => { messageBoxElement.style.display = 'none'; }, 500); }, 3000); }
+        function decodeBase64(str) { str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) { str += '='; } try { return decodeURIComponent(atob(str).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')); } catch (e) { console.error("Gagal mendekode Base64:", e); throw new Error('Gagal mendekode Base64 dari URI.'); } }
 
-        function displayRandomHadith() {
-            if (hadithQuoteContainer) {
-                const randomIndex = Math.floor(Math.random() * hadithQuotes.length);
-                hadithQuoteContainer.textContent = hadithQuotes[randomIndex];
-            }
-        }
-
-        function showMessage(msg, type) {
-            messageBoxElement.textContent = msg;
-            messageBoxElement.className = `message-box ${type}`;
-            messageBoxElement.style.display = 'block';
-            messageBoxElement.style.opacity = 1;
-            setTimeout(() => {
-                messageBoxElement.style.opacity = 0;
-                setTimeout(() => {
-                    messageBoxElement.style.display = 'none';
-                }, 500);
-            }, 3000);
-        }
-
-        function decodeBase64(str) {
-            str = str.replace(/-/g, '+').replace(/_/g, '/');
-            while (str.length % 4) {
-                str += '=';
-            }
-            try {
-                return decodeURIComponent(atob(str).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-            } catch (e) {
-                console.error("Gagal mendekode Base64:", e);
-                throw new Error('Gagal mendekode Base64 dari URI.');
-            }
-        }
-
-        function convertVmessToYaml(vmessUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
+        function convertVmessToYaml(vmessUri, expiryDate, rule) {
             const base64EncodedJson = vmessUri.substring(8).trim(); 
-            if (!base64EncodedJson) {
-                throw new Error('URI VMess tidak valid: Bagian Base64 kosong.');
-            }
-
-            const decodedJsonString = decodeBase64(base64EncodedJson);
-            const config = JSON.parse(decodedJsonString);
-
-            const baseName = config.ps || 'VMess_Proxy';
-            const name = baseName + selectedPaketSuffix; // Menggabungkan nama dengan suffix paket
-            const originalServer = config.add;
-            const port = parseInt(config.port, 10);
-            const uuid = config.id;
-            const alterId = parseInt(config.aid || '0', 10);
-            const network = config.net || 'tcp';
-            const wsPath = config.path || '/';
+            if (!base64EncodedJson) throw new Error('URI VMess tidak valid: Bagian Base64 kosong.');
+            const config = JSON.parse(decodeBase64(base64EncodedJson));
+            
+            const name = (config.ps || 'VMess_Proxy') + selectedPaketSuffix;
             const tls = config.tls === 'tls';
+            const network = config.net || 'tcp';
+            const originalServer = config.add;
 
-            if (!originalServer || isNaN(port) || !uuid) {
-                throw new Error('URI VMess tidak lengkap: Server, port, atau UUID tidak ditemukan.');
+            // Terapkan aturan modifikasi
+            const finalServer = rule.newServer || originalServer;
+            let finalSni = config.sni || config.host || originalServer;
+            if (rule.newSni) {
+                finalSni = rule.newSni;
+            } else if (rule.prefixSniHost) {
+                finalSni = rule.prefixSniHost + originalServer;
+            }
+            
+            let finalWsHost = config.host || originalServer;
+            if (rule.newHost) {
+                finalWsHost = rule.newHost;
+            } else if (rule.prefixSniHost) {
+                finalWsHost = rule.prefixSniHost + originalServer;
             }
 
-            let serverInYaml;
-            let servernameInYaml;
-            let hostHeaderInYaml;
-
-            if (isAvaWcMode) {
-                serverInYaml = 'ava.game.naver.com';
-                const avaWcCombinedHost = `ava.game.naver.com.${originalServer}`;
-                if (tls) {
-                    servernameInYaml = avaWcCombinedHost;
-                }
-                hostHeaderInYaml = avaWcCombinedHost;
-            } else {
-                serverInYaml = originalServer;
-                let actualSniSource = config.sni;
-                let actualHostSource = config.host;
-
-                if (sniOverrideHost) {
-                    serverInYaml = bugHost || originalServer; 
-                    servernameInYaml = tls ? sniOverrideHost : undefined;
-                    hostHeaderInYaml = sniOverrideHost;
-                } else if (bugHost) {
-                    if (useBugAsServerOnly) {
-                        serverInYaml = bugHost;
-                        servernameInYaml = tls ? (actualSniSource || originalServer) : undefined;
-                        hostHeaderInYaml = actualHostSource || originalServer;
-                    } else if (isZoomMode) {
-                        serverInYaml = bugHost;
-                        servernameInYaml = tls ? `${bugHost}.${originalServer}` : undefined;
-                        hostHeaderInYaml = `${bugHost}.${originalServer}`;
-                    } else {
-                        serverInYaml = bugHost;
-                        servernameInYaml = tls ? (actualSniSource || bugHost) : undefined;
-                        hostHeaderInYaml = actualHostSource || bugHost;
-                    }
-                } else {
-                    serverInYaml = originalServer;
-                    servernameInYaml = tls ? (actualSniSource || originalServer) : undefined;
-                    hostHeaderInYaml = actualHostSource || originalServer;
-                }
+            let yamlConfig = `- name: ${name}\n  type: vmess\n  server: ${finalServer}\n  port: ${config.port}\n  uuid: ${config.id}\n  alterId: ${config.aid || 0}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`;
+            if (tls && finalSni) {
+                yamlConfig += `  servername: ${finalSni}\n`;
             }
-
-            let yamlConfig = `- name: ${name}\n`;
-            yamlConfig += `  type: vmess\n`;
-            yamlConfig += `  server: ${serverInYaml}\n`;
-            yamlConfig += `  port: ${port}\n`;
-            yamlConfig += `  uuid: ${uuid}\n`;
-            yamlConfig += `  alterId: ${alterId}\n`;
-            yamlConfig += `  cipher: auto\n`;
-            yamlConfig += `  tls: ${tls}\n`;
-            yamlConfig += `  skip-cert-verify: true\n`;
+            
             yamlConfig += `  network: ${network}\n`;
-
-            if (tls && servernameInYaml) {
-                yamlConfig += `  servername: ${servernameInYaml}\n`;
-            }
-
             if (network === 'ws') {
-                yamlConfig += `  ws-opts:\n`;
-                yamlConfig += `    path: "${wsPath}"\n`;
-                yamlConfig += `    headers:\n`;
-                if (hostHeaderInYaml) {
-                    yamlConfig += `      Host: ${hostHeaderInYaml}\n`;
-                }
+                yamlConfig += `  ws-opts:\n    path: "${config.path || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`;
+            } else if (network === 'grpc') {
+                yamlConfig += `  grpc-opts:\n    grpc-service-name: "${config.path || ''}"\n`;
             }
             yamlConfig += `  udp: true\n`;
-            if (expiryDate) {
-                yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
-            }
+            if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
             return yamlConfig;
         }
 
-        function convertVlessToYaml(vlessUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
-            const parts = vlessUri.substring(8).split('?');
-            const authPart = parts[0];
-            const queryAndRemarkPart = parts.length > 1 ? parts[1] : '';
-
-            const authComponents = authPart.split('@');
-            if (authComponents.length !== 2) { throw new Error('URI VLESS tidak valid: Format UUID@server:port salah.'); }
-            const uuid = authComponents[0];
-            const serverPort = authComponents[1].split(':');
-            if (serverPort.length !== 2) { throw new Error('URI VLESS tidak valid: Format server:port salah.'); }
+        function convertVlessToYaml(vlessUri, expiryDate, rule) {
+            const url = new URL(vlessUri);
+            const name = (url.hash.substring(1) || `vless-${url.hostname}`) + selectedPaketSuffix;
+            const networkType = url.searchParams.get('type') || 'tcp';
+            const tls = url.searchParams.get('security') === 'tls';
+            const originalServer = url.hostname;
             
-            const originalServer = serverPort[0];
-            const port = parseInt(serverPort[1], 10);
-            if (isNaN(port)) { throw new Error('URI VLESS tidak valid: Port harus berupa angka.'); }
-
-            let queryParams = {};
-            let baseName = '';
-            if (queryAndRemarkPart) {
-                const hashIndex = queryAndRemarkPart.indexOf('#');
-                let queryString = queryAndRemarkPart;
-                if (hashIndex !== -1) {
-                    queryString = queryAndRemarkPart.substring(0, hashIndex);
-                    baseName = decodeURIComponent(queryAndRemarkPart.substring(hashIndex + 1));
-                }
-                queryString.split('&').forEach(param => {
-                    const [key, value] = param.split('=');
-                    if (key && value) { queryParams[key] = decodeURIComponent(value); }
-                });
-            }
-            if (!baseName) { baseName = `vless-${originalServer}`; }
-            const name = baseName + selectedPaketSuffix; // Menggabungkan nama dengan suffix paket
-
-            const tlsEnabled = queryParams.security === 'tls';
-            const networkType = queryParams.type || 'tcp';
-            const wsPath = queryParams.path || '/';
-
-            let serverInYaml;
-            let servernameInYaml;
-            let hostHeaderInYaml;
-
-            if (isAvaWcMode) {
-                serverInYaml = 'ava.game.naver.com';
-                const avaWcCombinedHost = `ava.game.naver.com.${originalServer}`;
-                if (tlsEnabled) {
-                    servernameInYaml = avaWcCombinedHost;
-                }
-                hostHeaderInYaml = avaWcCombinedHost;
-            } else {
-                serverInYaml = originalServer;
-                let actualSniSource = queryParams.sni;
-                let actualHostSource = queryParams.host;
-
-                if (sniOverrideHost) {
-                    serverInYaml = bugHost || originalServer;
-                    servernameInYaml = tlsEnabled ? sniOverrideHost : undefined;
-                    hostHeaderInYaml = sniOverrideHost;
-                } else if (bugHost) {
-                    if (useBugAsServerOnly) {
-                        serverInYaml = bugHost;
-                        servernameInYaml = tlsEnabled ? (actualSniSource || originalServer) : undefined;
-                        hostHeaderInYaml = actualHostSource || originalServer;
-                    } else if (isZoomMode) {
-                        serverInYaml = bugHost;
-                        servernameInYaml = tlsEnabled ? `${bugHost}.${originalServer}` : undefined;
-                        hostHeaderInYaml = `${bugHost}.${originalServer}`;
-                    } else { 
-                        serverInYaml = bugHost;
-                        servernameInYaml = tlsEnabled ? (actualSniSource || bugHost) : undefined;
-                        hostHeaderInYaml = actualHostSource || bugHost;
-                    }
-                } else { 
-                    serverInYaml = originalServer;
-                    servernameInYaml = tlsEnabled ? (actualSniSource || originalServer) : undefined;
-                    hostHeaderInYaml = actualHostSource || originalServer;
-                }
+            // Terapkan aturan modifikasi
+            const finalServer = rule.newServer || originalServer;
+            let finalSni = url.searchParams.get('sni') || originalServer;
+            if (rule.newSni) {
+                finalSni = rule.newSni;
+            } else if (rule.prefixSniHost) {
+                finalSni = rule.prefixSniHost + originalServer;
             }
 
-            let yamlConfig = `- name: ${name}\n`;
-            yamlConfig += `  server: ${serverInYaml}\n`;
-            yamlConfig += `  port: ${port}\n`;
-            yamlConfig += `  type: vless\n`;
-            yamlConfig += `  uuid: ${uuid}\n`;
-            yamlConfig += `  cipher: auto\n`; 
-            yamlConfig += `  tls: ${tlsEnabled}\n`;
-            yamlConfig += `  skip-cert-verify: true\n`;
-            if (tlsEnabled && servernameInYaml) {
-                yamlConfig += `  servername: ${servernameInYaml}\n`;
+            let finalWsHost = url.searchParams.get('host') || originalServer;
+             if (rule.newHost) {
+                finalWsHost = rule.newHost;
+            } else if (rule.prefixSniHost) {
+                finalWsHost = rule.prefixSniHost + originalServer;
             }
+
+
+            let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: vless\n  uuid: ${url.username}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`;
+            if (tls && finalSni) {
+                yamlConfig += `  servername: ${finalSni}\n`;
+            }
+            
             yamlConfig += `  network: ${networkType}\n`;
             if (networkType === 'ws') {
-                yamlConfig += `  ws-opts:\n`;
-                yamlConfig += `    path: "${wsPath}"\n`;
-                yamlConfig += `    headers:\n`;
-                if (hostHeaderInYaml) {
-                    yamlConfig += `      Host: ${hostHeaderInYaml}\n`;
-                }
+                yamlConfig += `  ws-opts:\n    path: "${url.searchParams.get('path') || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`;
+            } else if (networkType === 'grpc') {
+                yamlConfig += `  grpc-opts:\n    grpc-service-name: "${url.searchParams.get('serviceName') || ''}"\n`;
             }
             yamlConfig += `  udp: true\n`;
-            if (expiryDate) {
-                yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
-            }
-            return yamlConfig;
-        }
-
-        function convertTrojanToYaml(trojanUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
-            const parts = trojanUri.substring(9).split('?');
-            const authPart = parts[0];
-            const queryAndRemarkPart = parts.length > 1 ? parts[1] : '';
-
-            const authComponents = authPart.split('@');
-            if (authComponents.length !== 2) { throw new Error('URI Trojan tidak valid: Format password@server:port salah.'); }
-            const password = decodeURIComponent(authComponents[0]);
-            const serverPort = authComponents[1].split(':');
-            if (serverPort.length !== 2) { throw new Error('URI Trojan tidak valid: Format server:port salah.'); }
-            
-            const originalServer = serverPort[0];
-            const port = parseInt(serverPort[1], 10);
-            if (isNaN(port)) { throw new Error('URI Trojan tidak valid: Port harus berupa angka.'); }
-
-            let queryParams = {};
-            let baseName = '';
-            if (queryAndRemarkPart) {
-                const hashIndex = queryAndRemarkPart.indexOf('#');
-                let queryString = queryAndRemarkPart;
-                if (hashIndex !== -1) {
-                    queryString = queryAndRemarkPart.substring(0, hashIndex);
-                    baseName = decodeURIComponent(queryAndRemarkPart.substring(hashIndex + 1));
-                }
-                queryString.split('&').forEach(param => {
-                    const [key, value] = param.split('=');
-                    if (key && value) { queryParams[key] = decodeURIComponent(value); }
-                });
-            }
-            if (!baseName) { baseName = `trojan-${originalServer}`; }
-            const name = baseName + selectedPaketSuffix; // Menggabungkan nama dengan suffix paket
-
-            const tls = true; 
-            const network = queryParams.type === 'ws' || queryParams.path ? 'ws' : 'tcp'; 
-            const wsPath = queryParams.path || '/';
-            
-            let serverInYaml;
-            let servernameInYaml;
-            let hostHeaderInYaml;
-
-            if (isAvaWcMode) {
-                serverInYaml = 'ava.game.naver.com';
-                const avaWcCombinedHost = `ava.game.naver.com.${originalServer}`;
-                servernameInYaml = avaWcCombinedHost;
-                hostHeaderInYaml = avaWcCombinedHost;
-            } else {
-                serverInYaml = originalServer;
-                let actualSniSource = queryParams.sni;
-                let actualHostSource = queryParams.host;
-
-                if (sniOverrideHost) {
-                    serverInYaml = bugHost || originalServer;
-                    servernameInYaml = sniOverrideHost;
-                    hostHeaderInYaml = sniOverrideHost;
-                } else if (bugHost) {
-                    if (useBugAsServerOnly) {
-                        serverInYaml = bugHost;
-                        servernameInYaml = actualSniSource || originalServer;
-                        hostHeaderInYaml = actualHostSource || originalServer;
-                    } else if (isZoomMode) {
-                        serverInYaml = bugHost;
-                        servernameInYaml = `${bugHost}.${originalServer}`;
-                        hostHeaderInYaml = `${bugHost}.${originalServer}`;
-                    } else { 
-                        serverInYaml = bugHost;
-                        servernameInYaml = actualSniSource || bugHost;
-                        hostHeaderInYaml = actualHostSource || bugHost;
-                    }
-                } else { 
-                    serverInYaml = originalServer;
-                    servernameInYaml = actualSniSource || originalServer;
-                    hostHeaderInYaml = actualHostSource || originalServer;
-                }
-            }
-
-            let yamlConfig = `- name: ${name}\n`;
-            yamlConfig += `  type: trojan\n`;
-            yamlConfig += `  server: ${serverInYaml}\n`;
-            yamlConfig += `  port: ${port}\n`;
-            yamlConfig += `  password: "${password}"\n`;
-            yamlConfig += `  tls: ${tls}\n`; 
-            yamlConfig += `  skip-cert-verify: true\n`;
-            if (servernameInYaml) { 
-                yamlConfig += `  servername: ${servernameInYaml}\n`; 
-            }
-            yamlConfig += `  network: ${network}\n`;
-            if (network === 'ws') {
-                yamlConfig += `  ws-opts:\n`;
-                yamlConfig += `    path: "${wsPath}"\n`;
-                yamlConfig += `    headers:\n`;
-                if (hostHeaderInYaml) {
-                    yamlConfig += `      Host: ${hostHeaderInYaml}\n`;
-                }
-            }
-            yamlConfig += `  udp: ${queryParams.udp === 'true' ? 'true' : 'true'}\n`; 
-            if (expiryDate) {
-                yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
-            }
+            if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
             return yamlConfig;
         }
         
-        function convertSingleUriToYamlSnippet(proxyUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate) {
-            if (proxyUri.startsWith('vmess://')) {
-                return convertVmessToYaml(proxyUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate);
-            } else if (proxyUri.startsWith('vless://')) {
-                return convertVlessToYaml(proxyUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate);
-            } else if (proxyUri.startsWith('trojan://')) {
-                return convertTrojanToYaml(proxyUri, bugHost, isZoomMode, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, expiryDate);
-            } else {
-                throw new Error('Format URI tidak dikenal. Harap masukkan URI VMess, VLESS, atau Trojan yang valid.');
+        function convertTrojanToYaml(trojanUri, expiryDate, rule) {
+            const url = new URL(trojanUri);
+            const name = (url.hash.substring(1) || `trojan-${url.hostname}`) + selectedPaketSuffix;
+            const network = url.searchParams.get('type') || 'tcp';
+            const originalServer = url.hostname;
+            
+            // Terapkan aturan modifikasi
+            const finalServer = rule.newServer || originalServer;
+            let finalSni = url.searchParams.get('sni') || originalServer;
+            if (rule.newSni) {
+                finalSni = rule.newSni;
+            } else if (rule.prefixSniHost) {
+                finalSni = rule.prefixSniHost + originalServer;
             }
+
+            let finalWsHost = url.searchParams.get('host') || originalServer;
+             if (rule.newHost) {
+                finalWsHost = rule.newHost;
+            } else if (rule.prefixSniHost) {
+                finalWsHost = rule.prefixSniHost + originalServer;
+            }
+
+            let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: trojan\n  password: "${url.username}"\n  skip-cert-verify: true\n`;
+            if (finalSni) {
+                yamlConfig += `  sni: ${finalSni}\n`;
+            }
+            
+            yamlConfig += `  network: ${network}\n`;
+            if (network === 'ws') {
+                yamlConfig += `  ws-opts:\n    path: "${url.searchParams.get('path') || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`;
+            } else if (network === 'grpc') {
+                yamlConfig += `  grpc-opts:\n    grpc-service-name: "${url.searchParams.get('serviceName') || ''}"\n`;
+            }
+            yamlConfig += `  udp: true\n`;
+            if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
+            return yamlConfig;
         }
 
-        function performConversion(options = {}) {
-            displayRandomHadith(); 
-            const { bugHost = '', isZoom = false, sniOverrideHost = '', useBugAsServerOnly = false, isAvaWcMode = false } = options;
-            const rawInput = proxyUriInputElement.value.trim();
+        function convertSingleUriToYamlSnippet(proxyUri, expiryDate, rule) {
+            if (proxyUri.startsWith('vmess://')) return convertVmessToYaml(proxyUri, expiryDate, rule);
+            if (proxyUri.startsWith('vless://')) return convertVlessToYaml(proxyUri, expiryDate, rule);
+            if (proxyUri.startsWith('trojan://')) return convertTrojanToYaml(proxyUri, expiryDate, rule);
+            throw new Error('Format URI tidak dikenal.');
+        }
 
-            if (!rawInput) {
-                yamlOutputElement.textContent = '';
-                showMessage('Harap masukkan URI Proxy atau Detail Akun.', 'info');
-                return;
-            }
-
-            let urisToProcess = []; 
-            const lines = rawInput.split('\n');
-            
-            if (rawInput.includes("LINK WS TLS :")) {
-                let currentUri = null;
-                let currentExpiry = null; 
-
+        function getValidUris(rawInput) {
+            let urisToProcess = [];
+            const hasLinkLine = /LINK (WS|gRPC) TLS :/.test(rawInput);
+            if (hasLinkLine) {
+                const lines = rawInput.split('\n');
+                let currentUri = null, currentExpiry = null;
                 for (const line of lines) {
                     const trimmedLine = line.trim();
-
-                    if (trimmedLine.startsWith("LINK WS TLS :")) {
-                        if (currentUri) {
-                            urisToProcess.push({ uri: currentUri, expiry: currentExpiry }); 
-                        }
-                        currentUri = trimmedLine.substring("LINK WS TLS :".length).trim();
-                        currentExpiry = null; 
+                    const linkMatch = trimmedLine.match(/^LINK (?:WS|gRPC) TLS :\s*(.+)$/);
+                    if (linkMatch) {
+                        if (currentUri) urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
+                        currentUri = linkMatch[1].trim(); currentExpiry = null;
                     } else if (trimmedLine.startsWith("EXPIRED ON :")) {
                         if (currentUri) {
-                            let expiryText = trimmedLine.substring("EXPIRED ON :".length).trim();
-                            const expiryParenthesisIndex = expiryText.indexOf(" (");
-                            if (expiryParenthesisIndex !== -1) {
-                                expiryText = expiryText.substring(0, expiryParenthesisIndex).trim();
-                            }
+                            let expiryText = trimmedLine.substring(12).trim().split(" (")[0];
                             currentExpiry = expiryText;
                             urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
-                            currentUri = null; 
-                            currentExpiry = null;
+                            currentUri = null; currentExpiry = null;
                         }
                     }
                 }
-                if (currentUri) {
-                    urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
-                }
+                if (currentUri) urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
+            } else if (rawInput.length > 0) {
+                const rawUris = rawInput.split(/[|\n]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://"));
+                rawUris.forEach(uri => urisToProcess.push({ uri, expiry: null }));
             }
+            return urisToProcess;
+        }
+
+        function validateInput() {
+            if (isCollapsed) {
+                proxyUriInputElement.rows = 8;
+                isCollapsed = false;
+                
+                yamlOutputElement.textContent = '';
+                Object.values(buttonStyles).forEach(style => yamlOutputElement.classList.remove(style.border, style.bg));
+                lowerActionButtons.forEach(btn => btn.disabled = true);
+            }
+
+            const rawInput = proxyUriInputElement.value.trim();
+            const validUris = getValidUris(rawInput);
+
+            if (validUris.length > 0) {
+                initialMessageElement.style.display = 'none';
+                proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white static-green-border';
+                proxyUriInputElement.placeholder = `${validUris.length} Akun Terdeteksi. Silakan pilih tombol bug.`;
+                bugButtons.forEach(btn => btn.disabled = false);
+            } else {
+                setInitialState();
+            }
+        }
+        
+        function performConversion(buttonId, rule) {
+            const rawInput = proxyUriInputElement.value.trim();
+            const urisToProcess = getValidUris(rawInput);
+            if (urisToProcess.length === 0) { showMessage('Tidak ada URI proxy yang valid ditemukan.', 'error'); return; }
             
-            if (urisToProcess.length === 0 && rawInput.length > 0) {
-                 const rawUris = rawInput.split(/[|\n]+/)
-                                      .map(uri => uri.trim())
-                                      .filter(uri => uri.length > 0 && (uri.startsWith("vmess://") || uri.startsWith("vless://") || uri.startsWith("trojan://")));
-                rawUris.forEach(uri => urisToProcess.push({ uri: uri, expiry: null }));
-            }
-
-
-            if (urisToProcess.length === 0) {
-                showMessage('Tidak ada URI proxy yang valid ditemukan dalam input.', 'error');
-                yamlOutputElement.textContent = 'proxies:\n'; 
-                return;
-            }
-
             let finalYaml = 'proxies:\n';
             let successCount = 0;
-            let errorCount = 0;
-            let errorMessages = [];
-
             urisToProcess.forEach(item => {
                 try {
-                     if (!item.uri || (!item.uri.startsWith("vmess://") && !item.uri.startsWith("vless://") && !item.uri.startsWith("trojan://"))) {
-                        console.warn("Skipping invalid or non-proxy URI entry:", item.uri);
-                        return; 
-                    }
-                    finalYaml += convertSingleUriToYamlSnippet(item.uri, bugHost, isZoom, sniOverrideHost, useBugAsServerOnly, isAvaWcMode, item.expiry) + '\n';
+                    finalYaml += convertSingleUriToYamlSnippet(item.uri, item.expiry, rule) + '\n';
                     successCount++;
-                }
-                catch (error) {
-                    console.error("Error converting URI:", item.uri, error);
-                    errorMessages.push(`Error pada URI "${item.uri ? item.uri.substring(0,30) : 'undefined'}...": ${error.message}`);
-                    errorCount++;
-                }
+                } catch (e) { console.error("Error converting:", item.uri, e); }
             });
 
             yamlOutputElement.textContent = finalYaml;
-            if (errorCount > 0) {
-                showMessage(`${successCount} URI berhasil dikonversi, ${errorCount} gagal. Error pertama: ${errorMessages[0]}`, 'error');
-            } else if (successCount > 0) {
+            if (successCount > 0) {
                 showMessage('Konversi berhasil!', 'success');
+                lowerActionButtons.forEach(btn => btn.disabled = false);
+                isCollapsed = true;
+                proxyUriInputElement.rows = 1;
+                proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none input-processed';
+                messageBoxElement.style.display = 'none';
+
+                Object.values(buttonStyles).forEach(style => yamlOutputElement.classList.remove(style.border, style.bg));
+                const style = buttonStyles[buttonId];
+                if(style) {
+                    yamlOutputElement.classList.add(style.border, style.bg);
+                }
             } else {
-                yamlOutputElement.textContent = 'proxies:\n'; 
                 showMessage('Tidak ada URI valid yang berhasil dikonversi.', 'info');
             }
         }
 
-        function copyToClipboard() {
-            const textToCopy = yamlOutputElement.textContent;
-            if (textToCopy && !textToCopy.startsWith('Error:')) {
-                fallbackCopyToClipboard(textToCopy);
-            } else {
-                showMessage('Tidak ada YAML untuk disalin atau ada kesalahan.', 'info');
-            }
+        function copyToClipboard() { fallbackCopyToClipboard(yamlOutputElement.textContent, 'YAML berhasil disalin!'); }
+        function fallbackCopyToClipboard(text, msg) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed'; ta.style.opacity = 0;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); showMessage(msg, 'success'); } 
+            catch (err) { showMessage('Gagal menyalin. Silakan salin manual.', 'error'); } 
+            finally { document.body.removeChild(ta); }
         }
 
-        function fallbackCopyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed'; 
-            textarea.style.opacity = 0; 
-            document.body.appendChild(textarea);
-            textarea.select();
+        function extractAllProxyNames(yaml) { return (yaml.match(/- name: (.*)/g) || []).map(line => line.substring(8).trim().replace(/['"]/g, '')); }
+        function sanitizeFilename(name) { return (name || 'config').replace(/_vidio$|_xcvip$|_xcvipwc$|_vidiosni$|_avawc$/, '').replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '').substring(0, 50) || 'config'; }
+        
+        function exportToFile(content, filename, type) {
             try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showMessage('YAML berhasil disalin ke clipboard!', 'success');
-                } else {
-                    console.error('Fallback copyToClipboard: execCommand gagal');
-                    showMessage('Gagal menyalin YAML. Silakan salin secara manual.', 'error');
-                }
-            } catch (err) {
-                console.error('Gagal menyalin dengan execCommand:', err);
-                showMessage('Gagal menyalin YAML. Silakan salin secara manual.', 'error');
-            } finally {
-                document.body.removeChild(textarea);
-            }
-        }
-
-        function extractAllProxyNamesFromYamlOutput(proxiesYamlText) {
-            if (!proxiesYamlText || typeof proxiesYamlText !== 'string') {
-                return [];
-            }
-            const names = [];
-            const lines = proxiesYamlText.split('\n');
-            let inProxiesSection = false;
-            for (const line of lines) {
-                const trimmedLine = line.trim();
-                if (trimmedLine.toLowerCase() === "proxies:") { 
-                    inProxiesSection = true;
-                    continue;
-                }
-                if (inProxiesSection && trimmedLine.startsWith('- name:')) {
-                    let nameValue = trimmedLine.substring(7).trim(); 
-                    if ((nameValue.startsWith('"') && nameValue.endsWith('"')) || (nameValue.startsWith("'") && nameValue.endsWith("'"))) {
-                        nameValue = nameValue.slice(1, -1);
-                    }
-                    if (nameValue) {
-                         names.push(nameValue);
-                    }
-                }
-            }
-            return names;
-        }
-
-        function extractFirstNameFromYaml(proxiesYamlText) {
-             const names = extractAllProxyNamesFromYamlOutput(proxiesYamlText);
-             return names.length > 0 ? names[0] : '';
-        }
-
-        function sanitizeFilename(filename) {
-            if (!filename) return 'config'; 
-            // Menghapus suffix paket jika ada, sebelum sanitasi
-            let baseName = filename.replace(/_vidio$|_xcvip$|_xcvipwc$|_vidiosni$|_avawc$/, '');
-            let sanitized = baseName.replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '');
-            return sanitized.substring(0, 50) || 'config'; 
-        }
-
-        function exportToTxt() {
-            const textToExport = yamlOutputElement.textContent;
-            if (textToExport && !textToExport.startsWith('Error:') && !textToExport.startsWith('proxies:\n\n') && textToExport.trim().toLowerCase() !== 'proxies:') {
-                try {
-                    const firstProxyName = extractFirstNameFromYaml(textToExport);
-                    const filename = `${sanitizeFilename(firstProxyName)}${selectedPaketSuffix}.txt`; // Nama file baru
-
-                    const blob = new Blob([textToExport], { type: 'text/plain;charset=utf-8' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = filename;
-                    document.body.appendChild(link); 
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(link.href); 
-                    showMessage(`YAML berhasil diekspor ke ${filename}!`, 'success');
-                } catch (err) {
-                    console.error('Gagal mengekspor ke .txt:', err);
-                    showMessage('Gagal mengekspor YAML ke file .txt.', 'error');
-                }
-            } else {
-                showMessage('Tidak ada YAML valid untuk diekspor atau output kosong.', 'info');
-            }
-        }
-
-        function exportFullConfigToYaml() {
-            const convertedProxiesYaml = yamlOutputElement.textContent;
-
-            if (!convertedProxiesYaml || convertedProxiesYaml.trim().toLowerCase() === 'proxies:' || convertedProxiesYaml.startsWith('Error:')) {
-                showMessage('Tidak ada proxy yang telah dikonversi untuk membuat config lengkap.', 'info');
-                return;
-            }
-
-            const proxyNames = extractAllProxyNamesFromYamlOutput(convertedProxiesYaml);
-            const firstProxyName = proxyNames.length > 0 ? proxyNames[0] : 'default'; 
-            // Nama file sekarang mengambil nama dasar (tanpa suffix) dan menambahkan suffix dari tombol
-            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}.yaml`; 
-
-            let fullConfig = `port: 7890
-socks-port: 7891
-redir-port: 7892
-mixed-port: 7893
-tproxy-port: 7895
-ipv6: false
-mode: rule
-log-level: silent
-allow-lan: true
-external-controller: 0.0.0.0:9090
-secret: ''
-bind-address: '*'
-unified-delay: true
-profile:
-  store-selected: true
-dns:
-  enable: true
-  ipv6: false
-  enhanced-mode: redir-host
-  listen: 0.0.0.0:7874
-  nameserver:
-  - 8.8.8.8
-  - 1.0.0.1
-  - https://dns.google/dns-query
-  fallback:
-  - 1.1.1.1
-  - 8.8.4.4
-  - https://cloudflare-dns.com/dns-query
-  - 112.215.203.254
-  default-nameserver:
-  - 8.8.8.8
-  - 1.1.1.1
-  - 112.215.203.254
-`;
-
-            if (convertedProxiesYaml.trim().toLowerCase().startsWith("proxies:")) {
-                fullConfig += convertedProxiesYaml; 
-            } else {
-                fullConfig += "proxies:\n" + convertedProxiesYaml; 
-            }
-
-            let proxyGroupsYaml = `proxy-groups:\n`;
-            proxyGroupsYaml += `- name: SRPCOMVPN\n`;
-            proxyGroupsYaml += `  type: select\n`;
-            proxyGroupsYaml += `  proxies:\n`;
-            if (proxyNames.length > 0) {
-                proxyNames.forEach(name => {
-                    proxyGroupsYaml += `  - ${name}\n`;
-                });
-            } else {
-                proxyGroupsYaml += `  - DIRECT\n`; 
-            }
-
-            proxyGroupsYaml += `- name: FALLBACK\n`;
-            proxyGroupsYaml += `  type: fallback\n`;
-            proxyGroupsYaml += `  url: http://www.gstatic.com/generate_204\n`;
-            proxyGroupsYaml += `  interval: 300\n`;
-            proxyGroupsYaml += `  tolerance: 50\n`;
-            proxyGroupsYaml += `  proxies:\n`;
-            if (proxyNames.length > 0) {
-                proxyNames.forEach(name => {
-                    proxyGroupsYaml += `  - ${name}\n`;
-                });
-            } else {
-                 proxyGroupsYaml += `  - DIRECT\n`; 
-            }
-            fullConfig += proxyGroupsYaml;
-            fullConfig += `rules:\n- MATCH,GLOBAL\n`;
-
-            try {
-                const blob = new Blob([fullConfig], { type: 'application/x-yaml;charset=utf-8' });
+                const blob = new Blob([content], { type });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = filename;
-                document.body.appendChild(link); 
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href); 
-                showMessage(`Config lengkap berhasil diekspor ke ${filename}!`, 'success');
-            } catch (err) {
-                console.error('Gagal mengekspor config lengkap:', err);
-                showMessage('Gagal mengekspor config lengkap.', 'error');
-            }
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                showMessage(`Berhasil diekspor ke ${filename}!`, 'success');
+            } catch (err) { showMessage(`Gagal mengekspor file.`, 'error'); }
+        }
+        
+        function exportToTxt() {
+            const yaml = yamlOutputElement.textContent;
+            if (yaml.trim().length <= 8) { showMessage('Tidak ada YAML untuk diekspor.', 'info'); return; }
+            const firstName = extractAllProxyNames(yaml)[0];
+            exportToFile(yaml, `${sanitizeFilename(firstName)}${selectedPaketSuffix}.txt`, 'text/plain;charset=utf-8');
         }
 
-        function setupTooltip(buttonElement, tooltipElement, tooltipText) {
-            buttonElement.addEventListener('mouseenter', (event) => {
-                tooltipElement.innerHTML = tooltipText; 
-                tooltipElement.style.display = 'block';
-                
-                const buttonRect = buttonElement.getBoundingClientRect();
-                const tooltipRect = tooltipElement.getBoundingClientRect();
+        function exportFullConfigToYaml() {
+            const proxiesYaml = yamlOutputElement.textContent;
+            if (proxiesYaml.trim().length <= 8) { showMessage('Tidak ada proxy untuk membuat config.', 'info'); return; }
+            const proxyNames = extractAllProxyNames(proxiesYaml);
+            const firstProxyName = proxyNames[0] || 'default';
+            const filename = `srpcomconfig_${sanitizeFilename(firstProxyName)}.yaml`;
+            
+            let fullConfig = `port: 7890\nsocks-port: 7891\nredir-port: 7892\nmixed-port: 7893\ntproxy-port: 7895\nipv6: false\nmode: rule\nlog-level: silent\nallow-lan: true\nexternal-controller: 0.0.0.0:9090\nsecret: ''\nbind-address: '*'\nunified-delay: true\nprofile:\n  store-selected: true\ndns:\n  enable: true\n  ipv6: false\n  enhanced-mode: redir-host\n  listen: 0.0.0.0:7874\n  nameserver:\n  - 8.8.8.8\n  - 1.0.0.1\n  - https://dns.google/dns-query\n  fallback:\n  - 1.1.1.1\n  - 8.8.4.4\n  - https://cloudflare-dns.com/dns-query\n  - 112.215.203.254\n${proxiesYaml}\n`;
+            
+            let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT'}\n`;
+            proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT'}\n`;
+            fullConfig += proxyGroups + `rules:\n- MATCH,GLOBAL\n`;
 
-                let top = buttonRect.top - tooltipRect.height - 10; 
-                let left = buttonRect.left + (buttonRect.width / 2) - (tooltipRect.width / 2);
-
-                if (top < 0) {
-                    top = buttonRect.bottom + 10; 
-                }
-                if (left < 0) {
-                    left = 5; 
-                }
-                if (left + tooltipRect.width > window.innerWidth) {
-                    left = window.innerWidth - tooltipRect.width - 5; 
-                }
-                
-                tooltipElement.style.top = `${top + window.scrollY}px`;
-                tooltipElement.style.left = `${left + window.scrollX}px`;
-            });
-
-            buttonElement.addEventListener('mouseleave', () => {
-                tooltipElement.style.display = 'none';
-            });
+            exportToFile(fullConfig, filename, 'application/x-yaml;charset=utf-8');
         }
 
-        proxyUriInputElement.addEventListener('input', function() {
-            if (this.value.trim() !== '') {
-                this.classList.add('textarea-filled');
-            } else {
-                this.classList.remove('textarea-filled');
-            }
+        function setInitialState() {
+            initialMessageElement.textContent = 'Tempel URI atau detail akun di sini untuk memulai.';
+            initialMessageElement.style.display = 'block';
+            proxyUriInputElement.placeholder = 'Contoh: vmess://... atau beberapa baris detail akun';
+            proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white blinking-orange-border';
+            bugButtons.forEach(btn => btn.disabled = true);
+            lowerActionButtons.forEach(btn => btn.disabled = true);
+            Object.values(buttonStyles).forEach(style => yamlOutputElement.classList.remove(style.border, style.bg));
+            yamlOutputElement.textContent = '';
+        }
+
+        // Event Listeners
+        proxyUriInputElement.addEventListener('input', validateInput);
+
+        bugButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.id;
+                if (id === 'btnVidio') selectedPaketSuffix = '_vidio';
+                else if (id === 'btnXcvip') selectedPaketSuffix = '_xcvip';
+                else if (id === 'btnZoom') selectedPaketSuffix = '_xcvipwc';
+                else if (id === 'btnVidioSni') selectedPaketSuffix = '_vidiosni';
+                else if (id === 'btnAvaWc') selectedPaketSuffix = '_avawc';
+                else if (id === 'btnConvert') selectedPaketSuffix = '';
+
+                const rule = modificationRules[id];
+                
+                performConversion(id, rule);
+            });
         });
 
-        // Menambahkan event listener ke tombol-tombol dengan pengaturan suffix
-        btnVidio.addEventListener('click', () => { selectedPaketSuffix = '_vidio'; performConversion({ bugHost: 'quiz.vidio.com', useBugAsServerOnly: true }); });
-        btnXcvip.addEventListener('click', () => { selectedPaketSuffix = '_xcvip'; performConversion({ bugHost: 'xcvip.srpcom.online', useBugAsServerOnly: true }); });
-        btnZoom.addEventListener('click', () => { selectedPaketSuffix = '_xcvipwc'; performConversion({ bugHost: 'support.zoom.us', isZoom: true }); });
-        btnVidioSni.addEventListener('click', () => { selectedPaketSuffix = '_vidiosni'; performConversion({ sniOverrideHost: 'quiz.vidio.com' }); });
-        btnAvaWc.addEventListener('click', () => { selectedPaketSuffix = '_avawc'; performConversion({ isAvaWcMode: true }); });
-        btnConvert.addEventListener('click', () => { selectedPaketSuffix = ''; performConversion(); });
+        document.getElementById('btnCopy').addEventListener('click', copyToClipboard);
+        document.getElementById('btnExportTxt').addEventListener('click', exportToTxt);
+        document.getElementById('btnExportFullConfig').addEventListener('click', exportFullConfigToYaml);
+        setupTooltip(document.getElementById('btnExportFullConfig'), customTooltipElement, `<span>config openclash siap pakai. utk cara upload diopenclash silakan klik </span><a href="https://t.me/srpcomchannel/318" target="_blank" rel="noopener noreferrer">di sini</a>`);
 
-        btnCopy.addEventListener('click', copyToClipboard);
-        btnExportTxt.addEventListener('click', exportToTxt);
-        btnExportFullConfig.addEventListener('click', exportFullConfigToYaml); 
-        
-        const tooltipTextForFullConfig = `<span>config openclash siap pakai yang didalamnya sudah ada bug sesuai yg anda pilih . utk cara upload diopenclash silakan klik </span><a href="https://t.me/srpcomchannel/318" target="_blank" rel="noopener noreferrer">https://t.me/srpcomchannel/318</a>`;
-        setupTooltip(btnExportFullConfig, customTooltipElement, tooltipTextForFullConfig);
+        function setupTooltip(element, tooltip, text) {
+            element.addEventListener('mouseenter', (e) => {
+                tooltip.innerHTML = text; tooltip.style.display = 'block';
+                const rect = element.getBoundingClientRect();
+                tooltip.style.left = `${rect.left + (rect.width - tooltip.offsetWidth) / 2}px`;
+                tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10}px`;
+            });
+            element.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+        }
 
         window.onload = () => {
             proxyUriInputElement.value = ''; 
-            proxyUriInputElement.classList.remove('textarea-filled'); 
-            displayRandomHadith(); // Tampilkan kutipan saat halaman dimuat
-            showMessage('Tempel URI Proxy atau Detail Akun, lalu klik Konversi atau pilih opsi Bug.', 'info');
+            displayRandomHadith();
+            setInitialState();
         };
-
     </script>
 </body>
 </html>
