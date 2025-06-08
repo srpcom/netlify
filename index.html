@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM URL Converter v.4.1 (Interactive UI)</title>
+    <title>SRPCOM CONVERTER v.4.1</title>
     <!-- Favicon -->
     <link rel="icon" href="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +14,6 @@
         @keyframes animateRunningText { to { background-position: -200% center; } }
 
         /* --- Animasi Blinking Teks & Border --- */
-        @keyframes blink-green-text { 50% { color: #22c55e; text-shadow: 0 0 10px #22c55e; } }
         @keyframes blink-orange-border { 50% { border-color: #f97316; box-shadow: 0 0 12px #f97316; } }
         @keyframes blink-purple-border { 50% { border-color: #a855f7; box-shadow: 0 0 12px #a855f7; } }
         @keyframes blink-indigo-border { 50% { border-color: #6366f1; box-shadow: 0 0 12px #6366f1; } }
@@ -59,31 +58,30 @@
         .footer-link { color: #000000; text-decoration: none; font-weight: 600; text-shadow: 1px 1px 2px rgba(255,255,255,0.4); }
         .footer-link:hover { text-decoration: underline; color: #1f2937; }
         
-        .custom-tooltip { position: absolute; background-color: rgba(0, 0, 0, 0.65); color: #a7f3d0; padding: 8px 12px; border-radius: 6px; font-size: 0.875rem; z-index: 100; display: none; max-width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); pointer-events: none; }
-        .custom-tooltip span, .custom-tooltip a { pointer-events: auto; }
-        .custom-tooltip a { color: #6ee7b7; text-decoration: underline; }
-        .custom-tooltip a:hover { color: #34d399; }
-
         @media (max-width: 768px) { .header-container { flex-direction: column; gap: 0.25rem; } .main-title-text { font-size: 1.5rem; } .button-actions-group { flex-direction: column; gap: 0.75rem; } .button-actions-group .action-button { width: 100%; } }
         @media (max-width: 480px) { .container { padding: 1.5rem; } .main-title-text { font-size: 1.25rem; } }
     </style>
 </head>
 <body class="flex flex-col items-center min-h-screen p-4">
-    
+
     <div class="header-container">
         <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img" onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
-        <h1 class="main-title-text">SRPCOM URL CONVERTER v.4.1</h1>
+        <h1 class="main-title-text">SRPCOM CONVERTER v.4.1</h1>
     </div>
 
     <div class="container">
         <div class="space-y-6">
             <div>
-                <label id="initialMessage" for="proxyUriInput" class="block text-center text-gray-600 font-medium mb-2"></label>
+                 <div class="flex justify-end">
+                    <button id="btnClearInput" style="display: none;" class="bg-pink-500 bg-opacity-50 hover:bg-opacity-70 text-white font-semibold py-1 px-3 rounded-lg text-sm mb-2">
+                        Hapus saja
+                    </button>
+                </div>
                 <textarea
                     id="proxyUriInput"
                     rows="8"
                     class="w-full p-3 rounded-lg focus:outline-none bg-white"
-                    placeholder="Contoh: vmess://... atau beberapa baris detail akun"
+                    placeholder="Tempel URI atau detail akun di sini..."
                 ></textarea>
             </div>
 
@@ -115,15 +113,13 @@
     <div class="footer-link-container">
         <a href="https://t.me/srpcomgroup" target="_blank" class="footer-link">join : t.me/srpcomgroup</a>
     </div>
-    <div id="customTooltip" class="custom-tooltip"></div>
 
     <script>
         const proxyUriInputElement = document.getElementById('proxyUriInput');
         const yamlOutputElement = document.getElementById('yamlOutput');
         const messageBoxElement = document.getElementById('messageBox');
-        const customTooltipElement = document.getElementById('customTooltip'); 
         const hadithQuoteContainer = document.getElementById('hadithQuoteContainer'); 
-        const initialMessageElement = document.getElementById('initialMessage');
+        const btnClearInput = document.getElementById('btnClearInput');
 
         const bugButtons = document.querySelectorAll('.bug-button');
         const lowerActionButtons = document.querySelectorAll('.action-button-lower');
@@ -137,7 +133,7 @@
             'btnZoom':     { newServer: 'support.zoom.us',       prefixSniHost: 'support.zoom.us.' },
             'btnVidioSni': { newSni: 'quiz.vidio.com',          newHost: 'quiz.vidio.com' },
             'btnAvaWc':    { newServer: 'ava.game.naver.com',    prefixSniHost: 'ava.game.naver.com.' },
-            'btnConvert':  {} // No modifications
+            'btnConvert':  {} 
         };
 
         const buttonStyles = {
@@ -167,7 +163,6 @@
             const network = config.net || 'tcp';
             const originalServer = config.add;
 
-            // Terapkan aturan modifikasi
             const finalServer = rule.newServer || originalServer;
             let finalSni = config.sni || config.host || originalServer;
             if (rule.newSni) {
@@ -206,7 +201,6 @@
             const tls = url.searchParams.get('security') === 'tls';
             const originalServer = url.hostname;
             
-            // Terapkan aturan modifikasi
             const finalServer = rule.newServer || originalServer;
             let finalSni = url.searchParams.get('sni') || originalServer;
             if (rule.newSni) {
@@ -221,7 +215,6 @@
             } else if (rule.prefixSniHost) {
                 finalWsHost = rule.prefixSniHost + originalServer;
             }
-
 
             let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: vless\n  uuid: ${url.username}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`;
             if (tls && finalSni) {
@@ -245,7 +238,6 @@
             const network = url.searchParams.get('type') || 'tcp';
             const originalServer = url.hostname;
             
-            // Terapkan aturan modifikasi
             const finalServer = rule.newServer || originalServer;
             let finalSni = url.searchParams.get('sni') || originalServer;
             if (rule.newSni) {
@@ -314,25 +306,32 @@
         }
 
         function validateInput() {
+            const rawInput = proxyUriInputElement.value;
+            if (rawInput.length > 0) {
+                btnClearInput.style.display = 'block';
+            } else {
+                setInitialState();
+                return;
+            }
+
             if (isCollapsed) {
                 proxyUriInputElement.rows = 8;
                 isCollapsed = false;
-                
                 yamlOutputElement.textContent = '';
                 Object.values(buttonStyles).forEach(style => yamlOutputElement.classList.remove(style.border, style.bg));
                 lowerActionButtons.forEach(btn => btn.disabled = true);
             }
-
-            const rawInput = proxyUriInputElement.value.trim();
-            const validUris = getValidUris(rawInput);
+            
+            const validUris = getValidUris(rawInput.trim());
 
             if (validUris.length > 0) {
-                initialMessageElement.style.display = 'none';
                 proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white static-green-border';
                 proxyUriInputElement.placeholder = `${validUris.length} Akun Terdeteksi. Silakan pilih tombol bug.`;
                 bugButtons.forEach(btn => btn.disabled = false);
             } else {
-                setInitialState();
+                proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white blinking-orange-border';
+                proxyUriInputElement.placeholder = 'Tempel URI atau detail akun di sini...';
+                bugButtons.forEach(btn => btn.disabled = true);
             }
         }
         
@@ -420,18 +419,26 @@
         }
 
         function setInitialState() {
-            initialMessageElement.textContent = 'Tempel URI atau detail akun di sini untuk memulai.';
-            initialMessageElement.style.display = 'block';
-            proxyUriInputElement.placeholder = 'Contoh: vmess://... atau beberapa baris detail akun';
+            proxyUriInputElement.value = '';
+            proxyUriInputElement.placeholder = 'Tempel URI atau detail akun di sini...';
             proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white blinking-orange-border';
+            proxyUriInputElement.rows = 8;
+            isCollapsed = false;
+
             bugButtons.forEach(btn => btn.disabled = true);
             lowerActionButtons.forEach(btn => btn.disabled = true);
             Object.values(buttonStyles).forEach(style => yamlOutputElement.classList.remove(style.border, style.bg));
             yamlOutputElement.textContent = '';
+            btnClearInput.style.display = 'none';
         }
 
         // Event Listeners
         proxyUriInputElement.addEventListener('input', validateInput);
+
+        btnClearInput.addEventListener('click', () => {
+            proxyUriInputElement.value = '';
+            setInitialState();
+        });
 
         bugButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -452,17 +459,6 @@
         document.getElementById('btnCopy').addEventListener('click', copyToClipboard);
         document.getElementById('btnExportTxt').addEventListener('click', exportToTxt);
         document.getElementById('btnExportFullConfig').addEventListener('click', exportFullConfigToYaml);
-        setupTooltip(document.getElementById('btnExportFullConfig'), customTooltipElement, `<span>config openclash siap pakai. utk cara upload diopenclash silakan klik </span><a href="https://t.me/srpcomchannel/318" target="_blank" rel="noopener noreferrer">di sini</a>`);
-
-        function setupTooltip(element, tooltip, text) {
-            element.addEventListener('mouseenter', (e) => {
-                tooltip.innerHTML = text; tooltip.style.display = 'block';
-                const rect = element.getBoundingClientRect();
-                tooltip.style.left = `${rect.left + (rect.width - tooltip.offsetWidth) / 2}px`;
-                tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10}px`;
-            });
-            element.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
-        }
 
         window.onload = () => {
             proxyUriInputElement.value = ''; 
