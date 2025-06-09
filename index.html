@@ -436,7 +436,7 @@
             let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT'}\n\n`;
             proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT'}\n`;
 
-            fullConfig += proxyGroups + `\nrules:\n- MATCH,SRPCOMVPN\n`;
+            fullConfig += proxyGroups + `\nrules:\n- MATCH,GLOBAL\n`;
 
             exportToFile(fullConfig, filename, 'application/x-yaml;charset=utf-8');
         }
