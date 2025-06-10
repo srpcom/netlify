@@ -21,16 +21,6 @@
 
         /* --- Animasi Blinking Teks & Border --- */
         @keyframes blink-orange-border { 50% { border-color: #f97316; box-shadow: 0 0 12px #f97316; } }
-        @keyframes blink-purple-border { 50% { border-color: #a855f7; box-shadow: 0 0 12px #a855f7; } }
-        @keyframes blink-indigo-border { 50% { border-color: #6366f1; box-shadow: 0 0 12px #6366f1; } }
-        @keyframes blink-red-border { 50% { border-color: #ef4444; box-shadow: 0 0 12px #ef4444; } }
-        @keyframes blink-green-border { 50% { border-color: #22c55e; box-shadow: 0 0 12px #22c55e; } }
-        @keyframes blink-yellow-border { 50% { border-color: #facc15; box-shadow: 0 0 12px #facc15; } }
-        @keyframes blink-blue-border { 50% { border-color: #3b82f6; box-shadow: 0 0 12px #3b82f6; } }
-        @keyframes blink-spotify-green-border { 50% { border-color: #1DB954; box-shadow: 0 0 12px #1DB954; } }
-        @keyframes blink-facebook-blue-border { 50% { border-color: #1877F2; box-shadow: 0 0 12px #1877F2; } }
-        @keyframes blink-netflix-red-border { 50% { border-color: #E50914; box-shadow: 0 0 12px #E50914; } }
-        @keyframes blink-all-orange-border { 50% { border-color: #f59e0b; box-shadow: 0 0 12px #f59e0b; } }
         @keyframes blink-green-text { 50% { color: #16a34a; text-shadow: 0 0 8px #16a34a; } }
 
         /* --- Style Dasar --- */
@@ -58,17 +48,33 @@
         .action-button:disabled, .toggle-button:disabled { background-color: #e5e7eb !important; border-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 1; }
         
         .toggle-button.active { transform: translateY(1px); border-bottom-width: 2px; }
-        .toggle-button.blinking-purple-border.active { border-color: #a855f7; animation: blink-purple-border 1.5s infinite; }
-        .toggle-button.blinking-indigo-border.active { border-color: #6366f1; animation: blink-indigo-border 1.5s infinite; }
-        .toggle-button.blinking-red-border.active { border-color: #ef4444; animation: blink-red-border 1.5s infinite; }
-        .toggle-button.blinking-green-border.active { border-color: #22c55e; animation: blink-green-border 1.5s infinite; }
-        .toggle-button.blinking-yellow-border.active { border-color: #facc15; box-shadow: 0 0 12px #facc15; }
-        .toggle-button.blinking-blue-border.active { border-color: #3b82f6; animation: blink-blue-border 1.5s infinite; }
-        .toggle-button.blinking-spotify-green-border.active { border-color: #1DB954; animation: blink-spotify-green-border 1.5s infinite; }
-        .toggle-button.blinking-facebook-blue-border.active { border-color: #1877F2; animation: blink-facebook-blue-border 1.5s infinite; }
-        .toggle-button.blinking-netflix-red-border.active { border-color: #E50914; animation: blink-netflix-red-border 1.5s infinite; }
-        .toggle-button.blinking-all-orange-border.active { border-color: #f59e0b; animation: blink-all-orange-border 1.5s infinite; }
         
+        /* --- Tombol All Bug --- */
+        .all-bugs-on {
+            background-image: linear-gradient(90deg, #f87171, #fb923c, #facc15, #4ade80, #38bdf8, #818cf8, #c084fc, #f87171);
+            background-size: 200% 200%;
+            color: white;
+            font-weight: 700;
+            border: 4px solid transparent !important;
+            border-image: none !important;
+            animation: animateRainbow 4s ease infinite;
+        }
+        .all-bugs-off {
+            border-width: 4px !important;
+            border-style: solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(to right, #f87171, #fb923c, #facc15, #4ade80, #38bdf8, #818cf8, #c084fc);
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            color: #92400e !important;
+        }
+        #btnAllBugs:disabled {
+            border: 2px solid #d1d5db !important; 
+            border-bottom-width: 4px !important;
+            background-color: #e5e7eb !important; 
+            color: #9ca3af !important;
+            border-image: none !important; 
+        }
+
         .info-text { font-weight: 500; font-size: 0.875rem; }
         .account-count-info { color: #f97316; } /* Orange-500 */
         .output-count-info { color: #15803d; } /* Green-700 */
@@ -186,16 +192,16 @@
         };
 
         const buttonStateClasses = {
-            'btnVidio':    { on: ['bg-purple-600', 'text-white', 'active', 'blinking-purple-border'], off: ['bg-white', 'text-purple-600', 'border-purple-400'] },
-            'btnXcvip':    { on: ['bg-indigo-600', 'text-white', 'active', 'blinking-indigo-border'], off: ['bg-white', 'text-indigo-600', 'border-indigo-400'] },
-            'btnZoom':     { on: ['bg-red-600', 'text-white', 'active', 'blinking-red-border'], off: ['bg-white', 'text-red-600', 'border-red-400'] },
-            'btnVidioSni': { on: ['bg-green-600', 'text-white', 'active', 'blinking-green-border'], off: ['bg-white', 'text-green-600', 'border-green-400'] },
-            'btnAvaWc':    { on: ['bg-yellow-400', 'text-black', 'active', 'blinking-yellow-border'], off: ['bg-white', 'text-yellow-500', 'border-yellow-400'] },
-            'btnFb':       { on: ['bg-blue-800', 'text-white', 'active', 'blinking-facebook-blue-border'], off: ['bg-white', 'text-blue-800', 'border-blue-600'] },
-            'btnSpotify':  { on: ['bg-green-500', 'text-white', 'active', 'blinking-spotify-green-border'], off: ['bg-white', 'text-green-600', 'border-green-500'] },
-            'btnNetflix':  { on: ['bg-red-700', 'text-white', 'active', 'blinking-netflix-red-border'], off: ['bg-white', 'text-red-700', 'border-red-500'] },
-            'btnConvert':  { on: ['bg-gray-200', 'text-black', 'active', 'blinking-blue-border'], off: ['bg-white', 'text-gray-500', 'border-gray-400'] },
-            'btnAllBugs':  { on: ['bg-amber-500', 'text-white', 'active', 'blinking-all-orange-border'], off: ['bg-white', 'bg-opacity-50', 'text-amber-600', 'border-amber-400'] }
+            'btnVidio':    { on: ['bg-purple-600', 'text-white', 'active'], off: ['bg-white', 'text-purple-600', 'border-purple-400'] },
+            'btnXcvip':    { on: ['bg-indigo-600', 'text-white', 'active'], off: ['bg-white', 'text-indigo-600', 'border-indigo-400'] },
+            'btnZoom':     { on: ['bg-red-600', 'text-white', 'active'], off: ['bg-white', 'text-red-600', 'border-red-400'] },
+            'btnVidioSni': { on: ['bg-green-600', 'text-white', 'active'], off: ['bg-white', 'text-green-600', 'border-green-400'] },
+            'btnAvaWc':    { on: ['bg-yellow-400', 'text-black', 'active'], off: ['bg-white', 'text-yellow-500', 'border-yellow-400'] },
+            'btnFb':       { on: ['bg-blue-800', 'text-white', 'active'], off: ['bg-white', 'text-blue-800', 'border-blue-600'] },
+            'btnSpotify':  { on: ['bg-green-500', 'text-white', 'active'], off: ['bg-white', 'text-green-600', 'border-green-500'] },
+            'btnNetflix':  { on: ['bg-red-700', 'text-white', 'active'], off: ['bg-white', 'text-red-700', 'border-red-500'] },
+            'btnConvert':  { on: ['bg-gray-200', 'text-black', 'active'], off: ['bg-white', 'text-gray-500', 'border-gray-400'] },
+            'btnAllBugs':  { on: ['all-bugs-on', 'active'], off: ['all-bugs-off'] }
         };
 
         const outputStyleMap = {
@@ -231,7 +237,13 @@
             const rawInput = proxyUriInputElement.value.trim();
             const urisToProcess = getValidUris(rawInput);
             
-            const outputCount = urisToProcess.length * activeButtons.size;
+            let multiplier = activeButtons.size;
+            if (activeButtons.has('btnAllBugs')) {
+                multiplier = 9;
+            }
+
+            const outputCount = urisToProcess.length * multiplier;
+
             if (outputCount > 0) {
                 outputCountInfoElement.innerHTML = `Output akan dihasilkan: <span class="blinking-number">${outputCount}</span>`;
                 outputCountInfoElement.style.display = 'block';
@@ -239,7 +251,6 @@
                 outputCountInfoElement.style.display = 'none';
             }
 
-            // Set output box style
             if (lastActiveButtonId && outputStyleMap[lastActiveButtonId]) {
                 const styles = outputStyleMap[lastActiveButtonId];
                 yamlOutputElement.style.backgroundColor = styles.bg;
@@ -249,8 +260,7 @@
                  yamlOutputElement.style.borderColor = '#d1d5db';
             }
 
-
-            if (urisToProcess.length === 0 || activeButtons.size === 0) { 
+            if (urisToProcess.length === 0 || multiplier === 0) { 
                 yamlOutputElement.textContent = '';
                 lowerActionButtons.forEach(btn => btn.disabled = true);
                 return; 
@@ -261,6 +271,8 @@
 
             for (const uriItem of urisToProcess) {
                 for (const buttonId of activeButtons) {
+                    if(buttonId === 'btnAllBugs') continue;
+                    
                     const mod = modificationRules[buttonId];
                     if (!mod) continue;
 
@@ -339,7 +351,6 @@
             button.classList.add(...classes[state]);
         }
 
-
         function setInitialState() {
             proxyUriInputElement.value = '';
             proxyUriInputElement.placeholder = 'Tempel URI atau detail akun di sini...';
@@ -360,6 +371,9 @@
             document.querySelectorAll('.toggle-button').forEach(button => {
                 button.disabled = true;
                 setButtonState(button, 'off');
+                if (button.id === 'btnAllBugs') {
+                    button.textContent = 'All Bug';
+                }
             });
         }
 
@@ -370,44 +384,68 @@
         
         toggleButtonGrid.addEventListener('click', (e) => {
             const button = e.target.closest('.toggle-button');
-            if (!button) return;
-            
+            if (!button || button.disabled) return;
+
             const buttonId = button.id;
-            proxyUriInputElement.rows = 1; // Shrink textarea on button click
+            proxyUriInputElement.rows = 1;
+
+            const allBugBtn = document.getElementById('btnAllBugs');
+            const bugButtons = [...document.querySelectorAll('.toggle-button')].filter(b => b.id !== 'btnAllBugs' && b.id !== 'btnConvert');
 
             if (buttonId === 'btnAllBugs') {
-                const bugButtons = [...document.querySelectorAll('.toggle-button')].filter(b => b.id !== 'btnAllBugs');
-                const allAreActive = bugButtons.every(b => activeButtons.has(b.id));
-
-                bugButtons.forEach(btn => {
-                    if (allAreActive) { 
-                        activeButtons.delete(btn.id); setButtonState(btn, 'off');
-                    } else {
-                        activeButtons.add(btn.id); setButtonState(btn, 'on');
+                const allOthersActive = bugButtons.every(b => activeButtons.has(b.id));
+                bugButtons.forEach(b => {
+                    if (allOthersActive) { 
+                        activeButtons.delete(b.id);
+                        setButtonState(b, 'off');
+                    } else { 
+                        if (!activeButtons.has(b.id)) {
+                           activeButtons.add(b.id);
+                           setButtonState(b, 'on');
+                        }
                     }
                 });
-                setButtonState(button, allAreActive ? 'off' : 'on');
-                if (!allAreActive) { lastActiveButtonId = buttonId; }
-
-            } else {
-                 if (activeButtons.has(buttonId)) {
+            } else if (buttonId !== 'btnConvert') {
+                if (activeButtons.has(buttonId)) {
                     activeButtons.delete(buttonId);
-                    setButtonState(button, 'off');
                 } else {
                     activeButtons.add(buttonId);
-                    setButtonState(button, 'on');
-                    lastActiveButtonId = buttonId; // Update last active button
+                    lastActiveButtonId = buttonId;
+                }
+                setButtonState(button, activeButtons.has(buttonId) ? 'on' : 'off');
+            } else { // Handle 'Tanpa bug' separately
+                 if (activeButtons.has(buttonId)) {
+                    activeButtons.delete(buttonId);
+                } else {
+                    activeButtons.add(buttonId);
+                    lastActiveButtonId = buttonId;
+                }
+                setButtonState(button, activeButtons.has(buttonId) ? 'on' : 'off');
+            }
+            
+            // Sync state of 'All Bug' button
+            const allOthersNowActive = bugButtons.every(b => activeButtons.has(b.id));
+            if (allOthersNowActive) {
+                activeButtons.add('btnAllBugs');
+                setButtonState(allBugBtn, 'on');
+                allBugBtn.textContent = 'Semua Bug Digunakan';
+                lastActiveButtonId = 'btnAllBugs';
+            } else {
+                activeButtons.delete('btnAllBugs');
+                setButtonState(allBugBtn, 'off');
+                allBugBtn.textContent = 'All Bug';
+                if (lastActiveButtonId === 'btnAllBugs') {
+                   const lastOnButton = Array.from(activeButtons).filter(id => id !== 'btnAllBugs').pop();
+                   lastActiveButtonId = lastOnButton || null;
                 }
             }
             
-            // If all buttons are off, clear last active button
             if (activeButtons.size === 0) {
                 lastActiveButtonId = null;
             }
-
+            
             autoGenerate();
         });
-
 
         document.getElementById('btnCopy').addEventListener('click', copyToClipboard);
         document.getElementById('btnExportTxt').addEventListener('click', exportToTxt);
