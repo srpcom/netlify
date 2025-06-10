@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM CONVERTER v.6.3</title>
+    <title>SRPCOM CONVERTER v.6.5</title>
     <!-- Open Graph Meta Tags for Social Media Previews -->
-    <meta property="og:title" id="ogTitle" content="SRPCOM CONVERTER v.6.3">
+    <meta property="og:title" id="ogTitle" content="SRPCOM CONVERTER v.6.5">
     <meta property="og:description" content="Konversi berbagai format proxy ke YAML dengan mudah. Mendukung VLESS, VMess, Trojan, dan HTTP Upgrade.">
     <meta property="og:image" content="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true">
     <meta property="og:url" content=""> <!-- You can set the final URL here later -->
@@ -56,10 +56,7 @@
         .action-button:active:not(:disabled), .toggle-button:active:not(:disabled) { transform: translateY(1px); border-bottom-width: 2px; }
         .action-button:disabled, .toggle-button:disabled { background-color: #e5e7eb !important; border-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 1; }
         
-        .toggle-button.active {
-            transform: translateY(1px);
-            border-bottom-width: 2px;
-        }
+        .toggle-button.active { transform: translateY(1px); border-bottom-width: 2px; }
         .toggle-button.blinking-purple-border.active { border-color: #a855f7; animation: blink-purple-border 1.5s infinite; }
         .toggle-button.blinking-indigo-border.active { border-color: #6366f1; animation: blink-indigo-border 1.5s infinite; }
         .toggle-button.blinking-red-border.active { border-color: #ef4444; animation: blink-red-border 1.5s infinite; }
@@ -71,6 +68,7 @@
         .toggle-button.blinking-netflix-red-border.active { border-color: #E50914; animation: blink-netflix-red-border 1.5s infinite; }
         .toggle-button.blinking-all-orange-border.active { border-color: #f59e0b; animation: blink-all-orange-border 1.5s infinite; }
 
+        .info-text { text-align: center; font-weight: 500; color: #4b5563; margin-bottom: 0.5rem; font-size: 0.875rem; }
 
         .hadith-quote-container { text-align: center; margin-top: 2rem; padding: 0 1rem; font-style: italic; color: white; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); min-height: 40px; }
         .footer-link-container { text-align: center; margin-top: 1rem; padding-bottom: 1rem; }
@@ -104,6 +102,7 @@
     <div class="container">
         <div class="space-y-6">
             <div>
+                 <div id="accountCountInfo" class="info-text" style="display: none;"></div>
                  <div class="flex justify-end">
                     <button id="btnClearInput" style="display: none;" class="bg-pink-500 bg-opacity-50 hover:bg-opacity-70 text-white font-semibold py-1 px-3 rounded-lg text-sm mb-2">
                         Hapus saja
@@ -115,6 +114,7 @@
                     class="w-full p-3 rounded-lg focus:outline-none bg-white"
                     placeholder="Tempel URI atau detail akun di sini..."
                 ></textarea>
+                <div id="outputCountInfo" class="info-text mt-2" style="display: none;"></div>
             </div>
 
             <!-- Button Grid -->
@@ -153,7 +153,7 @@
 
     <script>
         // --- PENGATURAN APLIKASI ---
-        const APP_VERSION = "6.3";
+        const APP_VERSION = "6.5";
         const APP_NAME = "SRPCOM CONVERTER";
         // -------------------------
 
@@ -164,6 +164,8 @@
         const btnClearInput = document.getElementById('btnClearInput');
         const toggleButtonGrid = document.getElementById('toggleButtonGrid');
         const lowerActionButtons = document.querySelectorAll('.action-button-lower');
+        const accountCountInfoElement = document.getElementById('accountCountInfo');
+        const outputCountInfoElement = document.getElementById('outputCountInfo');
         
         const activeButtons = new Set();
 
@@ -270,7 +272,6 @@
             }
 
             yaml += `  udp: true\n`;
-
             if (type === 'trojan') {
                  yaml += `  sni: ${config.sni}\n`;
             } else {
@@ -282,7 +283,6 @@
             if (expiryDate) yaml += `#EXPIRED ON : ${expiryDate}\n`;
             return yaml;
         }
-
 
         function convertVmessToYaml(vmessUri, expiryDate, rule, suffix) {
             const base64EncodedJson = vmessUri.substring(8).trim(); 
@@ -316,7 +316,7 @@
 
         function convertVlessToYaml(vlessUri, expiryDate, rule, suffix) {
             const url = new URL(vlessUri);
-            const name = (url.hash.substring(1) || `vless-${url.hostname}`) + suffix;
+            const name = (decodeURIComponent(url.hash.substring(1)) || `vless-${url.hostname}`) + suffix;
             const networkType = url.searchParams.get('type') || 'tcp';
             const tls = url.searchParams.get('security') === 'tls';
             const originalServer = url.hostname;
@@ -343,7 +343,7 @@
         
         function convertTrojanToYaml(trojanUri, expiryDate, rule, suffix) {
             const url = new URL(trojanUri);
-            const name = (url.hash.substring(1) || `trojan-${url.hostname}`) + suffix;
+            const name = (decodeURIComponent(url.hash.substring(1)) || `trojan-${url.hostname}`) + suffix;
             const network = url.searchParams.get('type') || 'tcp';
             const originalServer = url.hostname;
             
@@ -379,7 +379,8 @@
 
        function getValidUris(rawInput) {
             let urisToProcess = [];
-            const blocks = rawInput.split(/━━━━━━━━━━━━━━━━━━━━━/);
+            // Split input into blocks based on "srpcomserver," as a delimiter
+            const blocks = rawInput.split('srpcomserver,');
 
             for (const block of blocks) {
                 if (block.trim() === '') continue;
@@ -391,7 +392,8 @@
 
                 for (const line of lines) {
                     const trimmedLine = line.trim();
-                    if (trimmedLine.startsWith("LINK")) {
+                    // Find the URI link
+                    if (trimmedLine.toUpperCase().startsWith("LINK")) {
                         const uriMatch = trimmedLine.match(/(vmess|vless|trojan):\/\/\S+/);
                         if (uriMatch) {
                             if (trimmedLine.includes("TLS") && !trimmedLine.includes("NONE-TLS")) {
@@ -401,59 +403,39 @@
                             }
                         }
                     }
-                    if (trimmedLine.startsWith("EXPIRED ON :")) {
+                    // Find the expiry date
+                    if (trimmedLine.toUpperCase().startsWith("EXPIRED ON :")) {
                         expiry = trimmedLine.substring(12).trim();
                     }
                 }
+                // Prioritize TLS URI, but use non-TLS if it's the only one
                 const finalUri = tlsUri || nonTlsUri;
                 if (finalUri) {
                     urisToProcess.push({ uri: finalUri, expiry });
                 }
             }
             
-            // Fallback for raw URIs
+            // Fallback for raw URIs if the srpcomserver format isn't found
             if(urisToProcess.length === 0 && rawInput.length > 0) {
                 const rawUris = rawInput.split(/[|\n\s]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://"));
                 rawUris.forEach(uri => urisToProcess.push({ uri, expiry: null }));
             }
             
-            // Grouping and filtering logic to prioritize TLS
-            const groupedUris = {};
-            for (const item of urisToProcess) {
-                let name = '';
-                let isTls = false;
-
-                try {
-                    if (item.uri.startsWith('vmess://')) {
-                        const config = JSON.parse(decodeBase64(item.uri.substring(8).trim()));
-                        name = config.ps || 'unnamed-vmess';
-                        isTls = config.tls === 'tls' || String(config.port) === '443';
-                    } else { // vless or trojan
-                        const url = new URL(item.uri);
-                        name = decodeURIComponent(url.hash.substring(1)) || url.hostname;
-                        isTls = url.searchParams.get('security') === 'tls' || url.port === '443';
-                    }
-                } catch (e) {
-                    console.error("Error parsing URI for grouping:", item.uri, e);
-                    continue;
-                }
-                
-                if (groupedUris[name]) {
-                    if (!groupedUris[name].isTls && isTls) {
-                        groupedUris[name] = { ...item, isTls };
-                    }
-                } else {
-                    groupedUris[name] = { ...item, isTls };
-                }
-            }
-            
-            return Object.values(groupedUris);
+            return urisToProcess; // No need for extra grouping if we take one URI per block
         }
         
         function autoGenerate() {
             const rawInput = proxyUriInputElement.value.trim();
             const urisToProcess = getValidUris(rawInput);
             
+            const outputCount = urisToProcess.length * activeButtons.size;
+            if (outputCount > 0) {
+                outputCountInfoElement.textContent = `Output akan dihasilkan: ${outputCount}`;
+                outputCountInfoElement.style.display = 'block';
+            } else {
+                outputCountInfoElement.style.display = 'none';
+            }
+
             if (urisToProcess.length === 0 || activeButtons.size === 0) { 
                 yamlOutputElement.textContent = '';
                 lowerActionButtons.forEach(btn => btn.disabled = true);
@@ -480,9 +462,7 @@
             yamlOutputElement.textContent = finalYaml;
             if (successCount > 0) {
                 lowerActionButtons.forEach(btn => btn.disabled = false);
-                 if (!messageBoxElement.textContent.includes("dihasilkan")) {
-                    showMessage(`${successCount} output dihasilkan.`, 'info');
-                }
+                // Avoid showing this message on every keypress
             } else {
                 yamlOutputElement.textContent = '';
                 lowerActionButtons.forEach(btn => btn.disabled = true);
@@ -496,24 +476,29 @@
             if (rawInput.length > 0) {
                 btnClearInput.style.display = 'block';
                 const validUris = getValidUris(rawInput.trim());
+
                 if (validUris.length > 0) {
+                    accountCountInfoElement.textContent = `Akun Terdeteksi: ${validUris.length}`;
+                    accountCountInfoElement.style.display = 'block';
                     proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white static-green-border';
                     proxyUriInputElement.placeholder = `${validUris.length} Akun Terdeteksi. Silakan pilih tombol bug.`;
                     toggleButtons.forEach(btn => btn.disabled = false);
-                    autoGenerate();
                 } else {
+                    accountCountInfoElement.style.display = 'none';
                     proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white blinking-orange-border';
+                    proxyUriInputElement.placeholder = 'Tempel URI atau detail akun di sini...';
                     toggleButtons.forEach(btn => btn.disabled = true);
-                    autoGenerate();
                 }
             } else {
                 setInitialState();
             }
+            // Always run autogenerate to update output based on input and button state
+            autoGenerate();
         }
 
         function copyToClipboard() { fallbackCopyToClipboard(yamlOutputElement.textContent, 'YAML berhasil disalin!'); }
         function fallbackCopyToClipboard(text, msg) {
-            if(!text || text.trim() === '') {
+            if(!text || text.trim() === '' || text.trim() === 'proxies:') {
                 showMessage('Tidak ada output untuk disalin.', 'info');
                 return;
             }
@@ -614,6 +599,8 @@
             yamlOutputElement.textContent = '';
             lowerActionButtons.forEach(btn => btn.disabled = true);
             btnClearInput.style.display = 'none';
+            accountCountInfoElement.style.display = 'none';
+            outputCountInfoElement.style.display = 'none';
           
             activeButtons.clear();
             document.querySelectorAll('.toggle-button').forEach(button => {
