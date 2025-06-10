@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM CONVERTER v.5.3</title>
+    <title>SRPCOM CONVERTER v.6.1</title>
+    <!-- Open Graph Meta Tags for Social Media Previews -->
+    <meta property="og:title" id="ogTitle" content="SRPCOM CONVERTER v.6.1">
+    <meta property="og:description" content="Konversi berbagai format proxy ke YAML dengan mudah. Mendukung VLESS, VMess, Trojan, dan HTTP Upgrade.">
+    <meta property="og:image" content="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true">
+    <meta property="og:url" content=""> <!-- You can set the final URL here later -->
+
     <!-- Favicon -->
     <link rel="icon" href="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,7 +29,8 @@
         @keyframes blink-blue-border { 50% { border-color: #3b82f6; box-shadow: 0 0 12px #3b82f6; } }
         @keyframes blink-spotify-green-border { 50% { border-color: #1DB954; box-shadow: 0 0 12px #1DB954; } }
         @keyframes blink-facebook-blue-border { 50% { border-color: #1877F2; box-shadow: 0 0 12px #1877F2; } }
-
+        @keyframes blink-netflix-red-border { 50% { border-color: #E50914; box-shadow: 0 0 12px #E50914; } }
+        @keyframes blink-all-orange-border { 50% { border-color: #f59e0b; box-shadow: 0 0 12px #f59e0b; } }
 
         /* --- Style Dasar --- */
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; padding-bottom: 4rem; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: animateRainbow 15s ease infinite; }
@@ -44,7 +51,7 @@
         .message-box.error { background-color: #fee2e2; color: #991b1b; }
         .message-box.info { background-color: #dbeafe; color: #1e40af; }
 
-        .action-button, .toggle-button { position: relative; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 2px solid transparent; border-bottom-width: 4px; transition: all 0.15s ease-in-out; }
+        .action-button, .toggle-button { position: relative; font-weight: 600; padding: 0.5rem; border-radius: 0.5rem; border: 2px solid transparent; border-bottom-width: 4px; transition: all 0.15s ease-in-out; text-align: center; font-size: 0.875rem; line-height: 1.25rem; }
         .action-button:hover:not(:disabled), .toggle-button:hover:not(:disabled) { transform: translateY(-2px); }
         .action-button:active:not(:disabled), .toggle-button:active:not(:disabled) { transform: translateY(1px); border-bottom-width: 2px; }
         .action-button:disabled, .toggle-button:disabled { background-color: #e5e7eb !important; border-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 1; }
@@ -61,6 +68,8 @@
         .toggle-button.blinking-blue-border.active { border-color: #3b82f6; animation: blink-blue-border 1.5s infinite; }
         .toggle-button.blinking-spotify-green-border.active { border-color: #1DB954; animation: blink-spotify-green-border 1.5s infinite; }
         .toggle-button.blinking-facebook-blue-border.active { border-color: #1877F2; animation: blink-facebook-blue-border 1.5s infinite; }
+        .toggle-button.blinking-netflix-red-border.active { border-color: #E50914; animation: blink-netflix-red-border 1.5s infinite; }
+        .toggle-button.blinking-all-orange-border.active { border-color: #f59e0b; animation: blink-all-orange-border 1.5s infinite; }
 
 
         .hadith-quote-container { text-align: center; margin-top: 2rem; padding: 0 1rem; font-style: italic; color: white; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); min-height: 40px; }
@@ -73,11 +82,13 @@
             .main-title-text { font-size: 1.5rem; } 
             .button-actions-group { flex-direction: column; gap: 0.75rem; } 
             .button-actions-group .action-button { width: 100%; } 
-            #toggleButtonGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            #toggleButtonGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .toggle-button { padding: 0.5rem 0.25rem; font-size: 0.75rem; }
         }
         @media (max-width: 480px) { 
             .container { padding: 1.5rem; } 
             .main-title-text { font-size: 1.25rem; } 
+            #toggleButtonGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
     </style>
 </head>
@@ -86,7 +97,7 @@
     <a href="https://t.me/srpcomadmin" target="_blank" rel="noopener noreferrer" class="block w-full">
         <div class="header-container">
             <img src="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true" alt="Logo SRPCOM" class="logo-img" onerror="this.onerror=null; this.src='https://placehold.co/75x25/f87171/ffffff?text=Logo&font=inter'; this.alt='Placeholder Logo SRPCOM';">
-            <h1 class="main-title-text">SRPCOM CONVERTER v.5.3</h1>
+            <h1 id="appTitle" class="main-title-text"></h1>
         </div>
     </a>
 
@@ -107,15 +118,17 @@
             </div>
 
             <!-- Button Grid -->
-            <div id="toggleButtonGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div id="toggleButtonGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4">
                 <button id="btnVidio" class="toggle-button">Vidio</button>
                 <button id="btnXcvip" class="toggle-button">XCVIP</button>
-                <button id="btnZoom" class="toggle-button">XCVIP WC</button>
+                <button id="btnZoom" class="toggle-button">xcvipwc</button>
                 <button id="btnVidioSni" class="toggle-button">vidioSNI</button>
                 <button id="btnAvaWc" class="toggle-button">avaWC</button>
                 <button id="btnFb" class="toggle-button">fb</button>
                 <button id="btnSpotify" class="toggle-button">spotify</button>
+                <button id="btnNetflix" class="toggle-button">netflix</button>
                 <button id="btnConvert" class="toggle-button">Tanpa bug</button>
+                <button id="btnAllBugs" class="toggle-button col-span-3 md:col-span-4">All Bug</button>
             </div>
 
             <div>
@@ -139,6 +152,11 @@
     </div>
 
     <script>
+        // --- PENGATURAN APLIKASI ---
+        const APP_VERSION = "6.1";
+        const APP_NAME = "SRPCOM CONVERTER";
+        // -------------------------
+
         const proxyUriInputElement = document.getElementById('proxyUriInput');
         const yamlOutputElement = document.getElementById('yamlOutput');
         const messageBoxElement = document.getElementById('messageBox');
@@ -157,6 +175,7 @@
             'btnAvaWc':    { suffix: '_avawc', rule: { newServer: 'ava.game.naver.com', prefixSniHost: 'ava.game.naver.com.' } },
             'btnFb':       { suffix: '_fb', rule: { newServer: 'investor.fb.com' } },
             'btnSpotify':  { suffix: '_spotify', rule: { newServer: 'investors.spotify.com' } },
+            'btnNetflix':  { suffix: '_netflix', rule: { newServer: 'cache.netflix.com' } },
             'btnConvert':  { suffix: '', rule: {} } 
         };
 
@@ -168,7 +187,9 @@
             'btnAvaWc':    { on: ['bg-yellow-400', 'text-black', 'active', 'blinking-yellow-border'], off: ['bg-white', 'text-yellow-500', 'border-yellow-400'] },
             'btnFb':       { on: ['bg-blue-800', 'text-white', 'active', 'blinking-facebook-blue-border'], off: ['bg-white', 'text-blue-800', 'border-blue-600'] },
             'btnSpotify':  { on: ['bg-green-500', 'text-white', 'active', 'blinking-spotify-green-border'], off: ['bg-white', 'text-green-600', 'border-green-500'] },
-            'btnConvert':  { on: ['bg-gray-200', 'text-black', 'active', 'blinking-blue-border'], off: ['bg-white', 'text-gray-500', 'border-gray-400'] }
+            'btnNetflix':  { on: ['bg-red-700', 'text-white', 'active', 'blinking-netflix-red-border'], off: ['bg-white', 'text-red-700', 'border-red-500'] },
+            'btnConvert':  { on: ['bg-gray-200', 'text-black', 'active', 'blinking-blue-border'], off: ['bg-white', 'text-gray-500', 'border-gray-400'] },
+            'btnAllBugs':  { on: ['bg-amber-500', 'text-white', 'active', 'blinking-all-orange-border'], off: ['bg-white', 'text-amber-600', 'border-amber-400'] }
         };
         
         const hadithQuotes = [
@@ -178,6 +199,90 @@
         function displayRandomHadith() { if (hadithQuoteContainer) { const randomIndex = Math.floor(Math.random() * hadithQuotes.length); hadithQuoteContainer.textContent = hadithQuotes[randomIndex]; } }
         function showMessage(msg, type) { messageBoxElement.textContent = msg; messageBoxElement.className = `message-box ${type}`; messageBoxElement.style.display = 'block'; messageBoxElement.style.opacity = 1; setTimeout(() => { messageBoxElement.style.opacity = 0; setTimeout(() => { messageBoxElement.style.display = 'none'; }, 500); }, 3000); }
         function decodeBase64(str) { str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) { str += '='; } try { return decodeURIComponent(atob(str).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')); } catch (e) { console.error("Gagal mendekode Base64:", e); throw new Error('Gagal mendekode Base64 dari URI.'); } }
+
+        function isHttpUpgrade(uri) {
+            try {
+                if (uri.startsWith('vmess://')) {
+                    const config = JSON.parse(decodeBase64(uri.substring(8).trim()));
+                    return config.net === 'httpupgrade';
+                }
+                if (uri.startsWith('vless://') || uri.startsWith('trojan://')) {
+                    const url = new URL(uri);
+                    return url.searchParams.get('type') === 'httpupgrade';
+                }
+            } catch (e) { return false; }
+            return false;
+        }
+
+        function convertHttpUpgradeToYaml(uri, expiryDate, rule, suffix) {
+            let config = {};
+            let type = '';
+
+            if (uri.startsWith('vmess://')) {
+                const decoded = JSON.parse(decodeBase64(uri.substring(8).trim()));
+                type = 'vmess';
+                config = {
+                    name: (decoded.ps || 'VMess_Proxy') + suffix,
+                    server: rule.newServer || decoded.add,
+                    port: decoded.port,
+                    uuid: decoded.id,
+                    alterId: decoded.aid || 0,
+                    cipher: 'auto',
+                    tls: decoded.tls === 'tls',
+                    servername: rule.prefixSniHost ? rule.prefixSniHost + decoded.add : (rule.newSni || decoded.sni || decoded.host || decoded.add),
+                    path: decoded.path,
+                    host: rule.prefixSniHost ? rule.prefixSniHost + decoded.add : (rule.newHost || decoded.host || decoded.add),
+                };
+            } else if (uri.startsWith('vless://')) {
+                const url = new URL(uri);
+                type = 'vless';
+                config = {
+                    name: (decodeURIComponent(url.hash.substring(1)) || 'VLess_Proxy') + suffix,
+                    server: rule.newServer || url.hostname,
+                    port: url.port,
+                    uuid: url.username,
+                    tls: url.searchParams.get('security') === 'tls',
+                    servername: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newSni || url.searchParams.get('sni') || url.searchParams.get('host') || url.hostname),
+                    path: url.searchParams.get('path'),
+                    host: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newHost || url.searchParams.get('host') || url.hostname),
+                };
+            } else if (uri.startsWith('trojan://')) {
+                const url = new URL(uri);
+                type = 'trojan';
+                config = {
+                    name: (decodeURIComponent(url.hash.substring(1)) || 'Trojan_Proxy') + suffix,
+                    server: rule.newServer || url.hostname,
+                    port: url.port,
+                    password: url.username,
+                    sni: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newSni || url.searchParams.get('sni') || url.searchParams.get('host') || url.hostname),
+                    path: url.searchParams.get('path'),
+                    host: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newHost || url.searchParams.get('host') || url.hostname),
+                };
+            }
+
+            let yaml = `- name: "${config.name}"\n  type: ${type}\n  server: ${config.server}\n  port: ${config.port}\n`;
+            if (type === 'vmess') {
+                yaml += `  uuid: ${config.uuid}\n  alterId: ${config.alterId}\n  cipher: ${config.cipher}\n`;
+            } else if (type === 'vless') {
+                yaml += `  uuid: ${config.uuid}\n`;
+            } else if (type === 'trojan') {
+                yaml += `  password: ${config.password}\n`;
+            }
+
+            yaml += `  udp: true\n`;
+
+            if (type === 'trojan') {
+                 yaml += `  sni: ${config.sni}\n`;
+            } else {
+                 yaml += `  tls: ${config.tls}\n  servername: ${config.servername}\n`;
+            }
+            
+            yaml += `  client-fingerprint: chrome\n  skip-cert-verify: true\n  alpn:\n  - http/1.1\n  network: ws\n  ws-opts:\n    path: "${config.path}"\n    headers:\n      Host: ${config.host}\n      v2ray-http-upgrade: true\n      v2ray-http-upgrade-fast-open: false\n`;
+            
+            if (expiryDate) yaml += `#EXPIRED ON : ${expiryDate}\n`;
+            return yaml;
+        }
+
 
         function convertVmessToYaml(vmessUri, expiryDate, rule, suffix) {
             const base64EncodedJson = vmessUri.substring(8).trim(); 
@@ -263,6 +368,9 @@
         }
 
         function convertSingleUriToYamlSnippet(proxyUri, expiryDate, rule, suffix) {
+            if (isHttpUpgrade(proxyUri)) {
+                return convertHttpUpgradeToYaml(proxyUri, expiryDate, rule, suffix);
+            }
             if (proxyUri.startsWith('vmess://')) return convertVmessToYaml(proxyUri, expiryDate, rule, suffix);
             if (proxyUri.startsWith('vless://')) return convertVlessToYaml(proxyUri, expiryDate, rule, suffix);
             if (proxyUri.startsWith('trojan://')) return convertTrojanToYaml(proxyUri, expiryDate, rule, suffix);
@@ -271,31 +379,50 @@
 
         function getValidUris(rawInput) {
             let urisToProcess = [];
-            const hasLinkLine = /LINK (WS|gRPC) TLS :/.test(rawInput);
-            if (hasLinkLine) {
-                const lines = rawInput.split('\n');
-                let currentUri = null, currentExpiry = null;
+            const blocks = rawInput.split(/━━━━━━━━━━━━━━━━━━━━━/);
+
+            for (const block of blocks) {
+                if (block.trim() === '') continue;
+
+                const lines = block.trim().split('\n');
+                let uri = null;
+                let expiry = null;
+
                 for (const line of lines) {
                     const trimmedLine = line.trim();
-                    const linkMatch = trimmedLine.match(/^LINK (?:WS|gRPC) TLS :\s*(.+)$/);
-                    if (linkMatch) {
-                        if (currentUri) urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
-                        currentUri = linkMatch[1].trim(); currentExpiry = null;
-                    } else if (trimmedLine.startsWith("EXPIRED ON :")) {
-                        if (currentUri) {
-                            let expiryText = trimmedLine.substring(12).trim().split(" (")[0];
-                            currentExpiry = expiryText;
-                            urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
-                            currentUri = null; currentExpiry = null;
+                     if (trimmedLine.startsWith("LINK")) {
+                        const uriMatch = trimmedLine.match(/(vmess|vless|trojan):\/\/\S+/);
+                        if (uriMatch) {
+                            uri = uriMatch[0];
                         }
                     }
+                    if (trimmedLine.startsWith("EXPIRED ON :")) {
+                        expiry = trimmedLine.substring(12).trim();
+                    }
                 }
-                if (currentUri) urisToProcess.push({ uri: currentUri, expiry: currentExpiry });
-            } else if (rawInput.length > 0) {
-                const rawUris = rawInput.split(/[|\n]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://"));
+
+                if (uri) {
+                    urisToProcess.push({ uri, expiry });
+                }
+            }
+
+            // Fallback for raw URIs pasted without any block formatting
+            if (urisToProcess.length === 0 && rawInput.length > 0) {
+                const rawUris = rawInput.split(/[|\n\s]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://"));
                 rawUris.forEach(uri => urisToProcess.push({ uri, expiry: null }));
             }
-            return urisToProcess;
+
+            // Remove duplicates
+            const uniqueUris = [];
+            const seenUris = new Set();
+            for (const item of urisToProcess) {
+                if (!seenUris.has(item.uri)) {
+                    uniqueUris.push(item);
+                    seenUris.add(item.uri);
+                }
+            }
+
+            return uniqueUris;
         }
         
         function autoGenerate() {
@@ -376,7 +503,7 @@
         }
 
         function extractAllProxyNames(yaml) { return (yaml.match(/- name: (.*)/g) || []).map(line => line.substring(8).trim().replace(/['"]/g, '')); }
-        function sanitizeFilename(name) { return (name || 'config').replace(/_vidio$|_xcvip$|_xcvipwc$|_vidiosni$|_avawc$|_fb$|_spotify$/, '').replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '').substring(0, 50) || 'config'; }
+        function sanitizeFilename(name) { return (name || 'config').replace(/_vidio$|_xcvip$|_xcvipwc$|_vidiosni$|_avawc$|_fb$|_spotify$|_netflix$/, '').replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '').substring(0, 50) || 'config'; }
         
         function exportToFile(content, filename, type) {
             try {
@@ -433,9 +560,10 @@
 
             let fullConfig = `port: 7890\nsocks-port: 7891\nredir-port: 7892\nmixed-port: 7893\ntproxy-port: 7895\nipv6: false\nmode: rule\nlog-level: silent\nallow-lan: true\nexternal-controller: 0.0.0.0:9090\nsecret: ''\nbind-address: '*'\nunified-delay: true\nprofile:\n  store-selected: true\ndns:\n  enable: true\n  ipv6: false\n  enhanced-mode: redir-host\n  listen: 0.0.0.0:7874\n  nameserver:\n  - 8.8.8.8\n  - 1.0.0.1\n  - https://dns.google/dns-query\n  fallback:\n  - 1.1.1.1\n  - 8.8.4.4\n  - https://cloudflare-dns.com/dns-query\n  - 112.215.203.254\n${proxiesYaml}\n`;
             
-            let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT'}\n\n`;
-            proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT'}\n`;
-
+            const proxyList = proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT';
+            let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyList}\n\n`;
+            proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyList}\n`;
+            
             fullConfig += proxyGroups + `\nrules:\n- MATCH,GLOBAL\n`;
 
             exportToFile(fullConfig, filename, 'application/x-yaml;charset=utf-8');
@@ -446,11 +574,9 @@
             const classes = buttonStateClasses[buttonId];
             if (!classes) return;
 
-            // Hapus semua kemungkinan kelas state
             const allStateClasses = [...classes.on, ...classes.off];
             button.classList.remove(...allStateClasses);
             
-            // Tambahkan kelas untuk state yang baru
             button.classList.add(...classes[state]);
         }
 
@@ -463,7 +589,7 @@
             yamlOutputElement.textContent = '';
             lowerActionButtons.forEach(btn => btn.disabled = true);
             btnClearInput.style.display = 'none';
-
+          
             activeButtons.clear();
             document.querySelectorAll('.toggle-button').forEach(button => {
                 button.disabled = true;
@@ -476,19 +602,36 @@
         btnClearInput.addEventListener('click', setInitialState);
         
         toggleButtonGrid.addEventListener('click', (e) => {
-            if (e.target.matches('.toggle-button')) {
-                const button = e.target;
-                const buttonId = button.id;
-                
-                if (activeButtons.has(buttonId)) {
+            const button = e.target.closest('.toggle-button');
+            if (!button) return;
+            
+            const buttonId = button.id;
+            
+            if (buttonId === 'btnAllBugs') {
+                const bugButtons = [...document.querySelectorAll('.toggle-button')].filter(b => b.id !== 'btnAllBugs');
+                const allAreActive = bugButtons.every(b => activeButtons.has(b.id));
+
+                bugButtons.forEach(btn => {
+                    if (allAreActive) { // if all are on, turn them off
+                        activeButtons.delete(btn.id);
+                        setButtonState(btn, 'off');
+                    } else { // if at least one is off, turn them all on
+                        activeButtons.add(btn.id);
+                        setButtonState(btn, 'on');
+                    }
+                });
+                setButtonState(button, allAreActive ? 'off' : 'on');
+
+            } else {
+                 if (activeButtons.has(buttonId)) {
                     activeButtons.delete(buttonId);
                     setButtonState(button, 'off');
                 } else {
                     activeButtons.add(buttonId);
                     setButtonState(button, 'on');
                 }
-                autoGenerate();
             }
+            autoGenerate();
         });
 
 
@@ -497,6 +640,14 @@
         document.getElementById('btnExportFullConfig').addEventListener('click', exportFullConfigToYaml);
 
         window.onload = () => {
+            // Set App Version
+            const fullTitle = `${APP_NAME} v.${APP_VERSION}`;
+            document.title = fullTitle;
+            document.getElementById('appTitle').textContent = fullTitle;
+            const ogTitle = document.getElementById('ogTitle');
+            if(ogTitle) ogTitle.setAttribute('content', fullTitle);
+
+
             displayRandomHadith();
             setInitialState();
         };
