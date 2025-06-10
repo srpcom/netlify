@@ -31,6 +31,7 @@
         @keyframes blink-facebook-blue-border { 50% { border-color: #1877F2; box-shadow: 0 0 12px #1877F2; } }
         @keyframes blink-netflix-red-border { 50% { border-color: #E50914; box-shadow: 0 0 12px #E50914; } }
         @keyframes blink-all-orange-border { 50% { border-color: #f59e0b; box-shadow: 0 0 12px #f59e0b; } }
+        @keyframes blink-green-text { 50% { color: #16a34a; text-shadow: 0 0 8px #16a34a; } }
 
         /* --- Style Dasar --- */
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; padding-bottom: 4rem; background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: animateRainbow 15s ease infinite; }
@@ -40,7 +41,7 @@
         .container { background-color: rgba(220, 252, 231, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); padding: 2rem; max-width: 900px; width: 95%; margin: 0 auto 2rem auto; }
         
         /* --- Style Interaktif --- */
-        textarea { resize: vertical; transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, height 0.3s ease; border: 2px solid transparent; }
+        textarea { resize: vertical; transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, height 0.3s ease, rows 0.3s ease; border: 2px solid transparent; }
         textarea.blinking-orange-border { animation: blink-orange-border 1.5s infinite; }
         textarea.static-green-border { border-color: #22c55e; background-color: #dcfce7 !important; }
 
@@ -67,8 +68,11 @@
         .toggle-button.blinking-facebook-blue-border.active { border-color: #1877F2; animation: blink-facebook-blue-border 1.5s infinite; }
         .toggle-button.blinking-netflix-red-border.active { border-color: #E50914; animation: blink-netflix-red-border 1.5s infinite; }
         .toggle-button.blinking-all-orange-border.active { border-color: #f59e0b; animation: blink-all-orange-border 1.5s infinite; }
-
-        .info-text { text-align: center; font-weight: 500; color: #4b5563; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        
+        .info-text { font-weight: 500; font-size: 0.875rem; }
+        .account-count-info { color: #f97316; } /* Orange-500 */
+        .output-count-info { color: #15803d; } /* Green-700 */
+        .blinking-number { animation: blink-green-text 1s infinite; }
 
         .hadith-quote-container { text-align: center; margin-top: 2rem; padding: 0 1rem; font-style: italic; color: white; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); min-height: 40px; }
         .footer-link-container { text-align: center; margin-top: 1rem; padding-bottom: 1rem; }
@@ -102,9 +106,9 @@
     <div class="container">
         <div class="space-y-6">
             <div>
-                 <div id="accountCountInfo" class="info-text" style="display: none;"></div>
-                 <div class="flex justify-end">
-                    <button id="btnClearInput" style="display: none;" class="bg-pink-500 bg-opacity-50 hover:bg-opacity-70 text-white font-semibold py-1 px-3 rounded-lg text-sm mb-2">
+                 <div class="flex justify-between items-center mb-2">
+                    <div id="accountCountInfo" class="info-text account-count-info" style="display: none;"></div>
+                    <button id="btnClearInput" style="display: none;" class="bg-pink-500 bg-opacity-50 hover:bg-opacity-70 text-white font-semibold py-1 px-3 rounded-lg text-sm">
                         Hapus saja
                     </button>
                 </div>
@@ -114,7 +118,7 @@
                     class="w-full p-3 rounded-lg focus:outline-none bg-white"
                     placeholder="Tempel URI atau detail akun di sini..."
                 ></textarea>
-                <div id="outputCountInfo" class="info-text mt-2" style="display: none;"></div>
+                <div id="outputCountInfo" class="info-text output-count-info text-left mt-2" style="display: none;"></div>
             </div>
 
             <!-- Button Grid -->
@@ -132,7 +136,6 @@
             </div>
 
             <div>
-                <label for="yamlOutput" class="block text-gray-700 font-medium mb-2 mt-6">Konfigurasi Proxy YAML:</label>
                 <pre id="yamlOutput"></pre>
             </div>
 
@@ -168,6 +171,7 @@
         const outputCountInfoElement = document.getElementById('outputCountInfo');
         
         const activeButtons = new Set();
+        let lastActiveButtonId = null;
 
         const modificationRules = {
             'btnVidio':    { suffix: '_vidio', rule: { newServer: 'quiz.vidio.com' } },
@@ -191,7 +195,20 @@
             'btnSpotify':  { on: ['bg-green-500', 'text-white', 'active', 'blinking-spotify-green-border'], off: ['bg-white', 'text-green-600', 'border-green-500'] },
             'btnNetflix':  { on: ['bg-red-700', 'text-white', 'active', 'blinking-netflix-red-border'], off: ['bg-white', 'text-red-700', 'border-red-500'] },
             'btnConvert':  { on: ['bg-gray-200', 'text-black', 'active', 'blinking-blue-border'], off: ['bg-white', 'text-gray-500', 'border-gray-400'] },
-            'btnAllBugs':  { on: ['bg-amber-500', 'text-white', 'active', 'blinking-all-orange-border'], off: ['bg-white', 'text-amber-600', 'border-amber-400'] }
+            'btnAllBugs':  { on: ['bg-amber-500', 'text-white', 'active', 'blinking-all-orange-border'], off: ['bg-white', 'bg-opacity-50', 'text-amber-600', 'border-amber-400'] }
+        };
+
+        const outputStyleMap = {
+            'btnVidio':    { border: '#a855f7', bg: '#f3e8ff' },
+            'btnXcvip':    { border: '#6366f1', bg: '#e0e7ff' },
+            'btnZoom':     { border: '#ef4444', bg: '#fee2e2' },
+            'btnVidioSni': { border: '#22c55e', bg: '#dcfce7' },
+            'btnAvaWc':    { border: '#facc15', bg: '#fef9c3' },
+            'btnFb':       { border: '#1877F2', bg: '#dbeafe' },
+            'btnSpotify':  { border: '#1DB954', bg: '#d1fae5' },
+            'btnNetflix':  { border: '#E50914', bg: '#fee2e2' },
+            'btnConvert':  { border: '#3b82f6', bg: '#dbeafe' },
+            'btnAllBugs':  { border: '#f59e0b', bg: '#fef3c7' }
         };
         
         const hadithQuotes = [
@@ -202,227 +219,13 @@
         function showMessage(msg, type) { messageBoxElement.textContent = msg; messageBoxElement.className = `message-box ${type}`; messageBoxElement.style.display = 'block'; messageBoxElement.style.opacity = 1; setTimeout(() => { messageBoxElement.style.opacity = 0; setTimeout(() => { messageBoxElement.style.display = 'none'; }, 500); }, 3000); }
         function decodeBase64(str) { str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) { str += '='; } try { return decodeURIComponent(atob(str).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join('')); } catch (e) { console.error("Gagal mendekode Base64:", e); throw new Error('Gagal mendekode Base64 dari URI.'); } }
 
-        function isHttpUpgrade(uri) {
-            try {
-                if (uri.startsWith('vmess://')) {
-                    const config = JSON.parse(decodeBase64(uri.substring(8).trim()));
-                    return config.net === 'httpupgrade';
-                }
-                if (uri.startsWith('vless://') || uri.startsWith('trojan://')) {
-                    const url = new URL(uri);
-                    return url.searchParams.get('type') === 'httpupgrade';
-                }
-            } catch (e) { return false; }
-            return false;
-        }
-
-        function convertHttpUpgradeToYaml(uri, expiryDate, rule, suffix) {
-            let config = {};
-            let type = '';
-
-            if (uri.startsWith('vmess://')) {
-                const decoded = JSON.parse(decodeBase64(uri.substring(8).trim()));
-                type = 'vmess';
-                config = {
-                    name: (decoded.ps || 'VMess_Proxy') + suffix,
-                    server: rule.newServer || decoded.add,
-                    port: decoded.port,
-                    uuid: decoded.id,
-                    alterId: decoded.aid || 0,
-                    cipher: 'auto',
-                    tls: decoded.tls === 'tls',
-                    servername: rule.prefixSniHost ? rule.prefixSniHost + decoded.add : (rule.newSni || decoded.sni || decoded.host || decoded.add),
-                    path: decoded.path,
-                    host: rule.prefixSniHost ? rule.prefixSniHost + decoded.add : (rule.newHost || decoded.host || decoded.add),
-                };
-            } else if (uri.startsWith('vless://')) {
-                const url = new URL(uri);
-                type = 'vless';
-                config = {
-                    name: (decodeURIComponent(url.hash.substring(1)) || 'VLess_Proxy') + suffix,
-                    server: rule.newServer || url.hostname,
-                    port: url.port,
-                    uuid: url.username,
-                    tls: url.searchParams.get('security') === 'tls',
-                    servername: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newSni || url.searchParams.get('sni') || url.searchParams.get('host') || url.hostname),
-                    path: url.searchParams.get('path'),
-                    host: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newHost || url.searchParams.get('host') || url.hostname),
-                };
-            } else if (uri.startsWith('trojan://')) {
-                const url = new URL(uri);
-                type = 'trojan';
-                config = {
-                    name: (decodeURIComponent(url.hash.substring(1)) || 'Trojan_Proxy') + suffix,
-                    server: rule.newServer || url.hostname,
-                    port: url.port,
-                    password: url.username,
-                    sni: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newSni || url.searchParams.get('sni') || url.searchParams.get('host') || url.hostname),
-                    path: url.searchParams.get('path'),
-                    host: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newHost || url.searchParams.get('host') || url.hostname),
-                };
-            }
-
-            let yaml = `- name: "${config.name}"\n  type: ${type}\n  server: ${config.server}\n  port: ${config.port}\n`;
-            if (type === 'vmess') {
-                yaml += `  uuid: ${config.uuid}\n  alterId: ${config.alterId}\n  cipher: ${config.cipher}\n`;
-            } else if (type === 'vless') {
-                yaml += `  uuid: ${config.uuid}\n`;
-            } else if (type === 'trojan') {
-                yaml += `  password: ${config.password}\n`;
-            }
-
-            yaml += `  udp: true\n`;
-            if (type === 'trojan') {
-                 yaml += `  sni: ${config.sni}\n`;
-            } else {
-                 yaml += `  tls: ${config.tls}\n  servername: ${config.servername}\n`;
-            }
-            
-            yaml += `  client-fingerprint: chrome\n  skip-cert-verify: true\n  alpn:\n  - http/1.1\n  network: ws\n  ws-opts:\n    path: "${config.path}"\n    headers:\n      Host: ${config.host}\n      v2ray-http-upgrade: true\n      v2ray-http-upgrade-fast-open: false\n`;
-            
-            if (expiryDate) yaml += `#EXPIRED ON : ${expiryDate}\n`;
-            return yaml;
-        }
-
-        function convertVmessToYaml(vmessUri, expiryDate, rule, suffix) {
-            const base64EncodedJson = vmessUri.substring(8).trim(); 
-            if (!base64EncodedJson) throw new Error('URI VMess tidak valid: Bagian Base64 kosong.');
-            const config = JSON.parse(decodeBase64(base64EncodedJson));
-            
-            const name = (config.ps || 'VMess_Proxy') + suffix;
-            const tls = config.tls === 'tls';
-            const network = config.net || 'tcp';
-            const originalServer = config.add;
-
-            const finalServer = rule.newServer || originalServer;
-            let finalSni = config.sni || config.host || originalServer;
-            if (rule.newSni) finalSni = rule.newSni;
-            else if (rule.prefixSniHost) finalSni = rule.prefixSniHost + originalServer;
-            
-            let finalWsHost = config.host || originalServer;
-            if (rule.newHost) finalWsHost = rule.newHost;
-            else if (rule.prefixSniHost) finalWsHost = rule.prefixSniHost + originalServer;
-
-            let yamlConfig = `- name: ${name}\n  type: vmess\n  server: ${finalServer}\n  port: ${config.port}\n  uuid: ${config.id}\n  alterId: ${config.aid || 0}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`;
-            if (tls && finalSni) yamlConfig += `  servername: ${finalSni}\n`;
-            
-            yamlConfig += `  network: ${network}\n`;
-            if (network === 'ws') yamlConfig += `  ws-opts:\n    path: "${config.path || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`;
-            else if (network === 'grpc') yamlConfig += `  grpc-opts:\n    grpc-service-name: "${config.path || ''}"\n`;
-            yamlConfig += `  udp: true\n`;
-            if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
-            return yamlConfig;
-        }
-
-        function convertVlessToYaml(vlessUri, expiryDate, rule, suffix) {
-            const url = new URL(vlessUri);
-            const name = (decodeURIComponent(url.hash.substring(1)) || `vless-${url.hostname}`) + suffix;
-            const networkType = url.searchParams.get('type') || 'tcp';
-            const tls = url.searchParams.get('security') === 'tls';
-            const originalServer = url.hostname;
-            
-            const finalServer = rule.newServer || originalServer;
-            let finalSni = url.searchParams.get('sni') || originalServer;
-            if (rule.newSni) finalSni = rule.newSni;
-            else if (rule.prefixSniHost) finalSni = rule.prefixSniHost + originalServer;
-
-            let finalWsHost = url.searchParams.get('host') || originalServer;
-            if (rule.newHost) finalWsHost = rule.newHost;
-            else if (rule.prefixSniHost) finalWsHost = rule.prefixSniHost + originalServer;
-
-            let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: vless\n  uuid: ${url.username}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`;
-            if (tls && finalSni) yamlConfig += `  servername: ${finalSni}\n`;
-            
-            yamlConfig += `  network: ${networkType}\n`;
-            if (networkType === 'ws') yamlConfig += `  ws-opts:\n    path: "${url.searchParams.get('path') || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`;
-            else if (networkType === 'grpc') yamlConfig += `  grpc-opts:\n    grpc-service-name: "${url.searchParams.get('serviceName') || ''}"\n`;
-            yamlConfig += `  udp: true\n`;
-            if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
-            return yamlConfig;
-        }
-        
-        function convertTrojanToYaml(trojanUri, expiryDate, rule, suffix) {
-            const url = new URL(trojanUri);
-            const name = (decodeURIComponent(url.hash.substring(1)) || `trojan-${url.hostname}`) + suffix;
-            const network = url.searchParams.get('type') || 'tcp';
-            const originalServer = url.hostname;
-            
-            const finalServer = rule.newServer || originalServer;
-            let finalSni = url.searchParams.get('sni') || originalServer;
-            if (rule.newSni) finalSni = rule.newSni;
-            else if (rule.prefixSniHost) finalSni = rule.prefixSniHost + originalServer;
-
-            let finalWsHost = url.searchParams.get('host') || originalServer;
-            if (rule.newHost) finalWsHost = rule.newHost;
-            else if (rule.prefixSniHost) finalWsHost = rule.prefixSniHost + originalServer;
-
-            let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: trojan\n  password: "${url.username}"\n  skip-cert-verify: true\n`;
-            if (finalSni) yamlConfig += `  sni: ${finalSni}\n`;
-            
-            yamlConfig += `  network: ${network}\n`;
-            if (network === 'ws') yamlConfig += `  ws-opts:\n    path: "${url.searchParams.get('path') || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`;
-            else if (network === 'grpc') yamlConfig += `  grpc-opts:\n    grpc-service-name: "${url.searchParams.get('serviceName') || ''}"\n`;
-            yamlConfig += `  udp: true\n`;
-            if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`;
-            return yamlConfig;
-        }
-
-        function convertSingleUriToYamlSnippet(proxyUri, expiryDate, rule, suffix) {
-            if (isHttpUpgrade(proxyUri)) {
-                return convertHttpUpgradeToYaml(proxyUri, expiryDate, rule, suffix);
-            }
-            if (proxyUri.startsWith('vmess://')) return convertVmessToYaml(proxyUri, expiryDate, rule, suffix);
-            if (proxyUri.startsWith('vless://')) return convertVlessToYaml(proxyUri, expiryDate, rule, suffix);
-            if (proxyUri.startsWith('trojan://')) return convertTrojanToYaml(proxyUri, expiryDate, rule, suffix);
-            throw new Error('Format URI tidak dikenal.');
-        }
-
-       function getValidUris(rawInput) {
-            let urisToProcess = [];
-            // Split input into blocks based on "srpcomserver," as a delimiter
-            const blocks = rawInput.split('srpcomserver,');
-
-            for (const block of blocks) {
-                if (block.trim() === '') continue;
-
-                const lines = block.trim().split('\n');
-                let tlsUri = null;
-                let nonTlsUri = null;
-                let expiry = null;
-
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    // Find the URI link
-                    if (trimmedLine.toUpperCase().startsWith("LINK")) {
-                        const uriMatch = trimmedLine.match(/(vmess|vless|trojan):\/\/\S+/);
-                        if (uriMatch) {
-                            if (trimmedLine.includes("TLS") && !trimmedLine.includes("NONE-TLS")) {
-                                tlsUri = uriMatch[0];
-                            } else {
-                                nonTlsUri = uriMatch[0];
-                            }
-                        }
-                    }
-                    // Find the expiry date
-                    if (trimmedLine.toUpperCase().startsWith("EXPIRED ON :")) {
-                        expiry = trimmedLine.substring(12).trim();
-                    }
-                }
-                // Prioritize TLS URI, but use non-TLS if it's the only one
-                const finalUri = tlsUri || nonTlsUri;
-                if (finalUri) {
-                    urisToProcess.push({ uri: finalUri, expiry });
-                }
-            }
-            
-            // Fallback for raw URIs if the srpcomserver format isn't found
-            if(urisToProcess.length === 0 && rawInput.length > 0) {
-                const rawUris = rawInput.split(/[|\n\s]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://"));
-                rawUris.forEach(uri => urisToProcess.push({ uri, expiry: null }));
-            }
-            
-            return urisToProcess; // No need for extra grouping if we take one URI per block
-        }
+        function isHttpUpgrade(uri) { try { if (uri.startsWith('vmess://')) { const config = JSON.parse(decodeBase64(uri.substring(8).trim())); return config.net === 'httpupgrade'; } if (uri.startsWith('vless://') || uri.startsWith('trojan://')) { const url = new URL(uri); return url.searchParams.get('type') === 'httpupgrade'; } } catch (e) { return false; } return false; }
+        function convertHttpUpgradeToYaml(uri, expiryDate, rule, suffix) { let config = {}; let type = ''; if (uri.startsWith('vmess://')) { const decoded = JSON.parse(decodeBase64(uri.substring(8).trim())); type = 'vmess'; config = { name: (decoded.ps || 'VMess_Proxy') + suffix, server: rule.newServer || decoded.add, port: decoded.port, uuid: decoded.id, alterId: decoded.aid || 0, cipher: 'auto', tls: decoded.tls === 'tls', servername: rule.prefixSniHost ? rule.prefixSniHost + decoded.add : (rule.newSni || decoded.sni || decoded.host || decoded.add), path: decoded.path, host: rule.prefixSniHost ? rule.prefixSniHost + decoded.add : (rule.newHost || decoded.host || decoded.add), }; } else if (uri.startsWith('vless://')) { const url = new URL(uri); type = 'vless'; config = { name: (decodeURIComponent(url.hash.substring(1)) || 'VLess_Proxy') + suffix, server: rule.newServer || url.hostname, port: url.port, uuid: url.username, tls: url.searchParams.get('security') === 'tls', servername: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newSni || url.searchParams.get('sni') || url.searchParams.get('host') || url.hostname), path: url.searchParams.get('path'), host: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newHost || url.searchParams.get('host') || url.hostname), }; } else if (uri.startsWith('trojan://')) { const url = new URL(uri); type = 'trojan'; config = { name: (decodeURIComponent(url.hash.substring(1)) || 'Trojan_Proxy') + suffix, server: rule.newServer || url.hostname, port: url.port, password: url.username, sni: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newSni || url.searchParams.get('sni') || url.searchParams.get('host') || url.hostname), path: url.searchParams.get('path'), host: rule.prefixSniHost ? rule.prefixSniHost + url.hostname : (rule.newHost || url.searchParams.get('host') || url.hostname), }; } let yaml = `- name: "${config.name}"\n  type: ${type}\n  server: ${config.server}\n  port: ${config.port}\n`; if (type === 'vmess') { yaml += `  uuid: ${config.uuid}\n  alterId: ${config.alterId}\n  cipher: ${config.cipher}\n`; } else if (type === 'vless') { yaml += `  uuid: ${config.uuid}\n`; } else if (type === 'trojan') { yaml += `  password: ${config.password}\n`; } yaml += `  udp: true\n`; if (type === 'trojan') { yaml += `  sni: ${config.sni}\n`; } else { yaml += `  tls: ${config.tls}\n  servername: ${config.servername}\n`; } yaml += `  client-fingerprint: chrome\n  skip-cert-verify: true\n  alpn:\n  - http/1.1\n  network: ws\n  ws-opts:\n    path: "${config.path}"\n    headers:\n      Host: ${config.host}\n      v2ray-http-upgrade: true\n      v2ray-http-upgrade-fast-open: false\n`; if (expiryDate) yaml += `#EXPIRED ON : ${expiryDate}\n`; return yaml; }
+        function convertVmessToYaml(vmessUri, expiryDate, rule, suffix) { const base64EncodedJson = vmessUri.substring(8).trim(); if (!base64EncodedJson) throw new Error('URI VMess tidak valid: Bagian Base64 kosong.'); const config = JSON.parse(decodeBase64(base64EncodedJson)); const name = (config.ps || 'VMess_Proxy') + suffix; const tls = config.tls === 'tls'; const network = config.net || 'tcp'; const originalServer = config.add; const finalServer = rule.newServer || originalServer; let finalSni = config.sni || config.host || originalServer; if (rule.newSni) finalSni = rule.newSni; else if (rule.prefixSniHost) finalSni = rule.prefixSniHost + originalServer; let finalWsHost = config.host || originalServer; if (rule.newHost) finalWsHost = rule.newHost; else if (rule.prefixSniHost) finalWsHost = rule.prefixSniHost + originalServer; let yamlConfig = `- name: ${name}\n  type: vmess\n  server: ${finalServer}\n  port: ${config.port}\n  uuid: ${config.id}\n  alterId: ${config.aid || 0}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`; if (tls && finalSni) yamlConfig += `  servername: ${finalSni}\n`; yamlConfig += `  network: ${network}\n`; if (network === 'ws') yamlConfig += `  ws-opts:\n    path: "${config.path || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`; else if (network === 'grpc') yamlConfig += `  grpc-opts:\n    grpc-service-name: "${config.path || ''}"\n`; yamlConfig += `  udp: true\n`; if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`; return yamlConfig; }
+        function convertVlessToYaml(vlessUri, expiryDate, rule, suffix) { const url = new URL(vlessUri); const name = (decodeURIComponent(url.hash.substring(1)) || `vless-${url.hostname}`) + suffix; const networkType = url.searchParams.get('type') || 'tcp'; const tls = url.searchParams.get('security') === 'tls'; const originalServer = url.hostname; const finalServer = rule.newServer || originalServer; let finalSni = url.searchParams.get('sni') || originalServer; if (rule.newSni) finalSni = rule.newSni; else if (rule.prefixSniHost) finalSni = rule.prefixSniHost + originalServer; let finalWsHost = url.searchParams.get('host') || originalServer; if (rule.newHost) finalWsHost = rule.newHost; else if (rule.prefixSniHost) finalWsHost = rule.prefixSniHost + originalServer; let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: vless\n  uuid: ${url.username}\n  cipher: auto\n  tls: ${tls}\n  skip-cert-verify: true\n`; if (tls && finalSni) yamlConfig += `  servername: ${finalSni}\n`; yamlConfig += `  network: ${networkType}\n`; if (networkType === 'ws') yamlConfig += `  ws-opts:\n    path: "${url.searchParams.get('path') || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`; else if (networkType === 'grpc') yamlConfig += `  grpc-opts:\n    grpc-service-name: "${url.searchParams.get('serviceName') || ''}"\n`; yamlConfig += `  udp: true\n`; if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`; return yamlConfig; }
+        function convertTrojanToYaml(trojanUri, expiryDate, rule, suffix) { const url = new URL(trojanUri); const name = (decodeURIComponent(url.hash.substring(1)) || `trojan-${url.hostname}`) + suffix; const network = url.searchParams.get('type') || 'tcp'; const originalServer = url.hostname; const finalServer = rule.newServer || originalServer; let finalSni = url.searchParams.get('sni') || originalServer; if (rule.newSni) finalSni = rule.newSni; else if (rule.prefixSniHost) finalSni = rule.prefixSniHost + originalServer; let finalWsHost = url.searchParams.get('host') || originalServer; if (rule.newHost) finalWsHost = rule.newHost; else if (rule.prefixSniHost) finalWsHost = rule.prefixSniHost + originalServer; let yamlConfig = `- name: ${name}\n  server: ${finalServer}\n  port: ${url.port}\n  type: trojan\n  password: "${url.username}"\n  skip-cert-verify: true\n`; if (finalSni) yamlConfig += `  sni: ${finalSni}\n`; yamlConfig += `  network: ${network}\n`; if (network === 'ws') yamlConfig += `  ws-opts:\n    path: "${url.searchParams.get('path') || '/'}"\n    headers:\n      Host: ${finalWsHost}\n`; else if (network === 'grpc') yamlConfig += `  grpc-opts:\n    grpc-service-name: "${url.searchParams.get('serviceName') || ''}"\n`; yamlConfig += `  udp: true\n`; if (expiryDate) yamlConfig += `#EXPIRED ON : ${expiryDate}\n`; return yamlConfig; }
+        function convertSingleUriToYamlSnippet(proxyUri, expiryDate, rule, suffix) { if (isHttpUpgrade(proxyUri)) { return convertHttpUpgradeToYaml(proxyUri, expiryDate, rule, suffix); } if (proxyUri.startsWith('vmess://')) return convertVmessToYaml(proxyUri, expiryDate, rule, suffix); if (proxyUri.startsWith('vless://')) return convertVlessToYaml(proxyUri, expiryDate, rule, suffix); if (proxyUri.startsWith('trojan://')) return convertTrojanToYaml(proxyUri, expiryDate, rule, suffix); throw new Error('Format URI tidak dikenal.'); }
+        function getValidUris(rawInput) { let urisToProcess = []; const blocks = rawInput.split('srpcomserver,'); for (const block of blocks) { if (block.trim() === '') continue; const lines = block.trim().split('\n'); let tlsUri = null; let nonTlsUri = null; let expiry = null; for (const line of lines) { const trimmedLine = line.trim(); if (trimmedLine.toUpperCase().startsWith("LINK")) { const uriMatch = trimmedLine.match(/(vmess|vless|trojan):\/\/\S+/); if (uriMatch) { if (trimmedLine.includes("TLS") && !trimmedLine.includes("NONE-TLS")) { tlsUri = uriMatch[0]; } else { nonTlsUri = uriMatch[0]; } } } if (trimmedLine.toUpperCase().startsWith("EXPIRED ON :")) { expiry = trimmedLine.substring(12).trim(); } } const finalUri = tlsUri || nonTlsUri; if (finalUri) { urisToProcess.push({ uri: finalUri, expiry }); } } if(urisToProcess.length === 0 && rawInput.length > 0) { const rawUris = rawInput.split(/[|\n\s]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://")); rawUris.forEach(uri => urisToProcess.push({ uri, expiry: null })); } return urisToProcess; }
         
         function autoGenerate() {
             const rawInput = proxyUriInputElement.value.trim();
@@ -430,11 +233,22 @@
             
             const outputCount = urisToProcess.length * activeButtons.size;
             if (outputCount > 0) {
-                outputCountInfoElement.textContent = `Output akan dihasilkan: ${outputCount}`;
+                outputCountInfoElement.innerHTML = `Output akan dihasilkan: <span class="blinking-number">${outputCount}</span>`;
                 outputCountInfoElement.style.display = 'block';
             } else {
                 outputCountInfoElement.style.display = 'none';
             }
+
+            // Set output box style
+            if (lastActiveButtonId && outputStyleMap[lastActiveButtonId]) {
+                const styles = outputStyleMap[lastActiveButtonId];
+                yamlOutputElement.style.backgroundColor = styles.bg;
+                yamlOutputElement.style.borderColor = styles.border;
+            } else {
+                 yamlOutputElement.style.backgroundColor = '';
+                 yamlOutputElement.style.borderColor = '#d1d5db';
+            }
+
 
             if (urisToProcess.length === 0 || activeButtons.size === 0) { 
                 yamlOutputElement.textContent = '';
@@ -462,7 +276,6 @@
             yamlOutputElement.textContent = finalYaml;
             if (successCount > 0) {
                 lowerActionButtons.forEach(btn => btn.disabled = false);
-                // Avoid showing this message on every keypress
             } else {
                 yamlOutputElement.textContent = '';
                 lowerActionButtons.forEach(btn => btn.disabled = true);
@@ -492,101 +305,37 @@
             } else {
                 setInitialState();
             }
-            // Always run autogenerate to update output based on input and button state
             autoGenerate();
         }
 
         function copyToClipboard() { fallbackCopyToClipboard(yamlOutputElement.textContent, 'YAML berhasil disalin!'); }
-        function fallbackCopyToClipboard(text, msg) {
-            if(!text || text.trim() === '' || text.trim() === 'proxies:') {
-                showMessage('Tidak ada output untuk disalin.', 'info');
-                return;
-            }
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed'; ta.style.opacity = 0;
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); showMessage(msg, 'success'); } 
-            catch (err) { showMessage('Gagal menyalin. Silakan salin manual.', 'error'); } 
-            finally { document.body.removeChild(ta); }
-        }
-
+        function fallbackCopyToClipboard(text, msg) { if(!text || text.trim() === '' || text.trim() === 'proxies:') { showMessage('Tidak ada output untuk disalin.', 'info'); return; } const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = 0; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); showMessage(msg, 'success'); } catch (err) { showMessage('Gagal menyalin. Silakan salin manual.', 'error'); } finally { document.body.removeChild(ta); } }
         function extractAllProxyNames(yaml) { return (yaml.match(/- name: (.*)/g) || []).map(line => line.substring(8).trim().replace(/['"]/g, '')); }
         function sanitizeFilename(name) { return (name || 'config').replace(/_vidio$|_xcvip$|_xcvipwc$|_vidiosni$|_avawc$|_fb$|_spotify$|_netflix$/, '').replace(/[<>:"/\\|?*\s]+/g, '_').replace(/[^a-zA-Z0-9_.-]/g, '').substring(0, 50) || 'config'; }
-        
-        function exportToFile(content, filename, type) {
-            try {
-                const blob = new Blob([content], { type });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                document.body.appendChild(link); link.click(); document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-                showMessage(`Berhasil diekspor ke ${filename}!`, 'success');
-            } catch (err) { showMessage(`Gagal mengekspor file.`, 'error'); }
-        }
+        function exportToFile(content, filename, type) { try { const blob = new Blob([content], { type }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(link.href); showMessage(`Berhasil diekspor ke ${filename}!`, 'success'); } catch (err) { showMessage(`Gagal mengekspor file.`, 'error'); } }
         
         function exportToTxt() {
             const yaml = yamlOutputElement.textContent;
-            if (!yaml || yaml.trim().length <= 8) { 
-                showMessage('Tidak ada YAML untuk diekspor.', 'info'); 
-                return; 
-            }
-            
-            const proxyNames = extractAllProxyNames(yaml);
-            const proxyCount = getValidUris(proxyUriInputElement.value).length;
-            const firstFullName = proxyNames[0];
-            const baseName = sanitizeFilename(firstFullName);
-            
-            let filename;
-            if (proxyCount === 1 && activeButtons.size === 1) {
-                 const singleMod = modificationRules[activeButtons.values().next().value];
-                 filename = `${baseName}${singleMod.suffix}.txt`;
-            } else {
-                filename = `${baseName}_multi.txt`;
-            }
-            exportToFile(yaml, filename, 'text/plain;charset=utf-8');
+            if (!yaml || yaml.trim().length <= 8) { showMessage('Tidak ada YAML untuk diekspor.', 'info'); return; }
+            const proxyNames = extractAllProxyNames(yaml); const proxyCount = getValidUris(proxyUriInputElement.value).length; const firstFullName = proxyNames[0]; const baseName = sanitizeFilename(firstFullName);
+            let filename; if (proxyCount === 1 && activeButtons.size === 1) { const singleMod = modificationRules[activeButtons.values().next().value]; filename = `${baseName}${singleMod.suffix}.txt`; } else { filename = `${baseName}_multi.txt`; } exportToFile(yaml, filename, 'text/plain;charset=utf-8');
         }
 
         function exportFullConfigToYaml() {
             const proxiesYaml = yamlOutputElement.textContent;
-            if (!proxiesYaml || proxiesYaml.trim().length <= 8) { 
-                showMessage('Tidak ada proxy untuk membuat config.', 'info'); 
-                return; 
-            }
-            const proxyNames = extractAllProxyNames(proxiesYaml);
-            const proxyCount = getValidUris(proxyUriInputElement.value).length;
-            const firstFullName = proxyNames[0];
-            const baseName = sanitizeFilename(firstFullName);
-            
-            let filename;
-            if (proxyCount === 1 && activeButtons.size === 1) {
-                const singleMod = modificationRules[activeButtons.values().next().value];
-                filename = `${baseName}${singleMod.suffix}_config.yaml`;
-            } else {
-                filename = `${baseName}_config.yaml`;
-            }
-
+            if (!proxiesYaml || proxiesYaml.trim().length <= 8) { showMessage('Tidak ada proxy untuk membuat config.', 'info'); return; }
+            const proxyNames = extractAllProxyNames(proxiesYaml); const proxyCount = getValidUris(proxyUriInputElement.value).length; const firstFullName = proxyNames[0]; const baseName = sanitizeFilename(firstFullName);
+            let filename; if (proxyCount === 1 && activeButtons.size === 1) { const singleMod = modificationRules[activeButtons.values().next().value]; filename = `${baseName}${singleMod.suffix}_config.yaml`; } else { filename = `${baseName}_config.yaml`; }
             let fullConfig = `port: 7890\nsocks-port: 7891\nredir-port: 7892\nmixed-port: 7893\ntproxy-port: 7895\nipv6: false\nmode: rule\nlog-level: silent\nallow-lan: true\nexternal-controller: 0.0.0.0:9090\nsecret: ''\nbind-address: '*'\nunified-delay: true\nprofile:\n  store-selected: true\ndns:\n  enable: true\n  ipv6: false\n  enhanced-mode: redir-host\n  listen: 0.0.0.0:7874\n  nameserver:\n  - 8.8.8.8\n  - 1.0.0.1\n  - https://dns.google/dns-query\n  fallback:\n  - 1.1.1.1\n  - 8.8.4.4\n  - https://cloudflare-dns.com/dns-query\n  - 112.215.203.254\n${proxiesYaml}\n`;
-            
-            const proxyList = proxyNames.map(n => `  - "${n}"`).join('\n') || '  - DIRECT';
-            let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyList}\n\n`;
-            proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyList}\n`;
-            
-            fullConfig += `${proxyGroups}\nrules:\n- MATCH,GLOBAL\n`;
-
-            exportToFile(fullConfig, filename, 'application/x-yaml;charset=utf-8');
+            const proxyList = proxyNames.map(n => `  - "${n}"`).join('\n') || '  - DIRECT'; let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyList}\n\n`; proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyList}\n`; fullConfig += `${proxyGroups}\nrules:\n- MATCH,GLOBAL\n`; exportToFile(fullConfig, filename, 'application/x-yaml;charset=utf-8');
         }
         
         function setButtonState(button, state) {
             const buttonId = button.id;
             const classes = buttonStateClasses[buttonId];
             if (!classes) return;
-
-            const allStateClasses = [...classes.on, ...classes.off];
+            const allStateClasses = [...classes.on, ...classes.off].flat();
             button.classList.remove(...allStateClasses);
-            
             button.classList.add(...classes[state]);
         }
 
@@ -595,14 +344,19 @@
             proxyUriInputElement.value = '';
             proxyUriInputElement.placeholder = 'Tempel URI atau detail akun di sini...';
             proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white blinking-orange-border';
+            proxyUriInputElement.rows = 8;
             
             yamlOutputElement.textContent = '';
+            yamlOutputElement.style.backgroundColor = '';
+            yamlOutputElement.style.borderColor = '#d1d5db';
+
             lowerActionButtons.forEach(btn => btn.disabled = true);
             btnClearInput.style.display = 'none';
             accountCountInfoElement.style.display = 'none';
             outputCountInfoElement.style.display = 'none';
           
             activeButtons.clear();
+            lastActiveButtonId = null;
             document.querySelectorAll('.toggle-button').forEach(button => {
                 button.disabled = true;
                 setButtonState(button, 'off');
@@ -611,6 +365,7 @@
 
         // Event Listeners
         proxyUriInputElement.addEventListener('input', validateInput);
+        proxyUriInputElement.addEventListener('click', () => { proxyUriInputElement.rows = 8; });
         btnClearInput.addEventListener('click', setInitialState);
         
         toggleButtonGrid.addEventListener('click', (e) => {
@@ -618,21 +373,21 @@
             if (!button) return;
             
             const buttonId = button.id;
-            
+            proxyUriInputElement.rows = 1; // Shrink textarea on button click
+
             if (buttonId === 'btnAllBugs') {
                 const bugButtons = [...document.querySelectorAll('.toggle-button')].filter(b => b.id !== 'btnAllBugs');
                 const allAreActive = bugButtons.every(b => activeButtons.has(b.id));
 
                 bugButtons.forEach(btn => {
-                    if (allAreActive) { // if all are on, turn them off
-                        activeButtons.delete(btn.id);
-                        setButtonState(btn, 'off');
-                    } else { // if at least one is off, turn them all on
-                        activeButtons.add(btn.id);
-                        setButtonState(btn, 'on');
+                    if (allAreActive) { 
+                        activeButtons.delete(btn.id); setButtonState(btn, 'off');
+                    } else {
+                        activeButtons.add(btn.id); setButtonState(btn, 'on');
                     }
                 });
                 setButtonState(button, allAreActive ? 'off' : 'on');
+                if (!allAreActive) { lastActiveButtonId = buttonId; }
 
             } else {
                  if (activeButtons.has(buttonId)) {
@@ -641,8 +396,15 @@
                 } else {
                     activeButtons.add(buttonId);
                     setButtonState(button, 'on');
+                    lastActiveButtonId = buttonId; // Update last active button
                 }
             }
+            
+            // If all buttons are off, clear last active button
+            if (activeButtons.size === 0) {
+                lastActiveButtonId = null;
+            }
+
             autoGenerate();
         });
 
@@ -652,14 +414,11 @@
         document.getElementById('btnExportFullConfig').addEventListener('click', exportFullConfigToYaml);
 
         window.onload = () => {
-            // Set App Version
             const fullTitle = `${APP_NAME} v.${APP_VERSION}`;
             document.title = fullTitle;
             document.getElementById('appTitle').textContent = fullTitle;
             const ogTitle = document.getElementById('ogTitle');
             if(ogTitle) ogTitle.setAttribute('content', fullTitle);
-
-
             displayRandomHadith();
             setInitialState();
         };
