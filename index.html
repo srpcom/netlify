@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRPCOM CONVERTER v.6.1</title>
+    <title>SRPCOM CONVERTER v.6.3</title>
     <!-- Open Graph Meta Tags for Social Media Previews -->
-    <meta property="og:title" id="ogTitle" content="SRPCOM CONVERTER v.6.1">
+    <meta property="og:title" id="ogTitle" content="SRPCOM CONVERTER v.6.3">
     <meta property="og:description" content="Konversi berbagai format proxy ke YAML dengan mudah. Mendukung VLESS, VMess, Trojan, dan HTTP Upgrade.">
     <meta property="og:image" content="https://github.com/srpcom/netlify/blob/main/logo%20kecil%20srpcom.png?raw=true">
     <meta property="og:url" content=""> <!-- You can set the final URL here later -->
@@ -64,7 +64,7 @@
         .toggle-button.blinking-indigo-border.active { border-color: #6366f1; animation: blink-indigo-border 1.5s infinite; }
         .toggle-button.blinking-red-border.active { border-color: #ef4444; animation: blink-red-border 1.5s infinite; }
         .toggle-button.blinking-green-border.active { border-color: #22c55e; animation: blink-green-border 1.5s infinite; }
-        .toggle-button.blinking-yellow-border.active { border-color: #facc15; animation: blink-yellow-border 1.5s infinite; }
+        .toggle-button.blinking-yellow-border.active { border-color: #facc15; box-shadow: 0 0 12px #facc15; }
         .toggle-button.blinking-blue-border.active { border-color: #3b82f6; animation: blink-blue-border 1.5s infinite; }
         .toggle-button.blinking-spotify-green-border.active { border-color: #1DB954; animation: blink-spotify-green-border 1.5s infinite; }
         .toggle-button.blinking-facebook-blue-border.active { border-color: #1877F2; animation: blink-facebook-blue-border 1.5s infinite; }
@@ -153,7 +153,7 @@
 
     <script>
         // --- PENGATURAN APLIKASI ---
-        const APP_VERSION = "6.1";
+        const APP_VERSION = "6.3";
         const APP_NAME = "SRPCOM CONVERTER";
         // -------------------------
 
@@ -377,7 +377,7 @@
             throw new Error('Format URI tidak dikenal.');
         }
 
-        function getValidUris(rawInput) {
+       function getValidUris(rawInput) {
             let urisToProcess = [];
             const blocks = rawInput.split(/━━━━━━━━━━━━━━━━━━━━━/);
 
@@ -385,44 +385,69 @@
                 if (block.trim() === '') continue;
 
                 const lines = block.trim().split('\n');
-                let uri = null;
+                let tlsUri = null;
+                let nonTlsUri = null;
                 let expiry = null;
 
                 for (const line of lines) {
                     const trimmedLine = line.trim();
-                     if (trimmedLine.startsWith("LINK")) {
+                    if (trimmedLine.startsWith("LINK")) {
                         const uriMatch = trimmedLine.match(/(vmess|vless|trojan):\/\/\S+/);
                         if (uriMatch) {
-                            uri = uriMatch[0];
+                            if (trimmedLine.includes("TLS") && !trimmedLine.includes("NONE-TLS")) {
+                                tlsUri = uriMatch[0];
+                            } else {
+                                nonTlsUri = uriMatch[0];
+                            }
                         }
                     }
                     if (trimmedLine.startsWith("EXPIRED ON :")) {
                         expiry = trimmedLine.substring(12).trim();
                     }
                 }
-
-                if (uri) {
-                    urisToProcess.push({ uri, expiry });
+                const finalUri = tlsUri || nonTlsUri;
+                if (finalUri) {
+                    urisToProcess.push({ uri: finalUri, expiry });
                 }
             }
-
-            // Fallback for raw URIs pasted without any block formatting
-            if (urisToProcess.length === 0 && rawInput.length > 0) {
+            
+            // Fallback for raw URIs
+            if(urisToProcess.length === 0 && rawInput.length > 0) {
                 const rawUris = rawInput.split(/[|\n\s]+/).map(u => u.trim()).filter(u => u.startsWith("vmess://") || u.startsWith("vless://") || u.startsWith("trojan://"));
                 rawUris.forEach(uri => urisToProcess.push({ uri, expiry: null }));
             }
-
-            // Remove duplicates
-            const uniqueUris = [];
-            const seenUris = new Set();
+            
+            // Grouping and filtering logic to prioritize TLS
+            const groupedUris = {};
             for (const item of urisToProcess) {
-                if (!seenUris.has(item.uri)) {
-                    uniqueUris.push(item);
-                    seenUris.add(item.uri);
+                let name = '';
+                let isTls = false;
+
+                try {
+                    if (item.uri.startsWith('vmess://')) {
+                        const config = JSON.parse(decodeBase64(item.uri.substring(8).trim()));
+                        name = config.ps || 'unnamed-vmess';
+                        isTls = config.tls === 'tls' || String(config.port) === '443';
+                    } else { // vless or trojan
+                        const url = new URL(item.uri);
+                        name = decodeURIComponent(url.hash.substring(1)) || url.hostname;
+                        isTls = url.searchParams.get('security') === 'tls' || url.port === '443';
+                    }
+                } catch (e) {
+                    console.error("Error parsing URI for grouping:", item.uri, e);
+                    continue;
+                }
+                
+                if (groupedUris[name]) {
+                    if (!groupedUris[name].isTls && isTls) {
+                        groupedUris[name] = { ...item, isTls };
+                    }
+                } else {
+                    groupedUris[name] = { ...item, isTls };
                 }
             }
-
-            return uniqueUris;
+            
+            return Object.values(groupedUris);
         }
         
         function autoGenerate() {
@@ -479,7 +504,7 @@
                 } else {
                     proxyUriInputElement.className = 'w-full p-3 rounded-lg focus:outline-none bg-white blinking-orange-border';
                     toggleButtons.forEach(btn => btn.disabled = true);
-                    autoGenerate(); // Clear output if input becomes invalid
+                    autoGenerate();
                 }
             } else {
                 setInitialState();
@@ -560,11 +585,11 @@
 
             let fullConfig = `port: 7890\nsocks-port: 7891\nredir-port: 7892\nmixed-port: 7893\ntproxy-port: 7895\nipv6: false\nmode: rule\nlog-level: silent\nallow-lan: true\nexternal-controller: 0.0.0.0:9090\nsecret: ''\nbind-address: '*'\nunified-delay: true\nprofile:\n  store-selected: true\ndns:\n  enable: true\n  ipv6: false\n  enhanced-mode: redir-host\n  listen: 0.0.0.0:7874\n  nameserver:\n  - 8.8.8.8\n  - 1.0.0.1\n  - https://dns.google/dns-query\n  fallback:\n  - 1.1.1.1\n  - 8.8.4.4\n  - https://cloudflare-dns.com/dns-query\n  - 112.215.203.254\n${proxiesYaml}\n`;
             
-            const proxyList = proxyNames.map(n => `  - ${n}`).join('\n') || '  - DIRECT';
+            const proxyList = proxyNames.map(n => `  - "${n}"`).join('\n') || '  - DIRECT';
             let proxyGroups = `proxy-groups:\n- name: SRPCOMVPN\n  type: select\n  proxies:\n${proxyList}\n\n`;
             proxyGroups += `- name: FALLBACK\n  type: fallback\n  url: http://www.gstatic.com/generate_204\n  interval: 300\n  proxies:\n${proxyList}\n`;
             
-            fullConfig += proxyGroups + `\nrules:\n- MATCH,GLOBAL\n`;
+            fullConfig += `${proxyGroups}\nrules:\n- MATCH,GLOBAL\n`;
 
             exportToFile(fullConfig, filename, 'application/x-yaml;charset=utf-8');
         }
